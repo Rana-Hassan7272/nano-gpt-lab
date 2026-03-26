@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import mlflow
 from mlflow.tracking import MlflowClient
 
 
@@ -20,10 +21,22 @@ def main() -> None:
     tracking_dir = repo_root / "results" / "mlruns"
     tracking_uri = f"file://{tracking_dir}"
 
+    mlflow.set_tracking_uri(tracking_uri)
     client = MlflowClient(tracking_uri=tracking_uri)
-    experiments = client.list_experiments()
+
+    # Different MLflow versions expose different APIs; try multiple options.
+    experiments = None
+    for fn in ("list_experiments", "search_experiments"):
+        if hasattr(client, fn):
+            experiments = getattr(client, fn)()
+            break
+    if experiments is None:
+        # Fallback to top-level mlflow helper if available.
+        if hasattr(mlflow, "search_experiments"):
+            experiments = mlflow.search_experiments()
+
     if not experiments:
-        print("No MLflow experiments found.")
+        print("No MLflow experiments found (or unable to list experiments).")
         return
 
     metrics_keys = ["train_loss", "val_loss", "perplexity", "learning_rate", "grad_norm"]
