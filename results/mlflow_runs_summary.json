@@ -1,0 +1,90 @@
+[
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "6e879af09da04668a5730cdb91ac7538",
+    "run_name": "train-20260326-181531",
+    "final_step": null,
+    "train_loss": 4.7149858474731445,
+    "val_loss": 6.329835391044616,
+    "perplexity": 561.0642300544326,
+    "learning_rate": 2.9999999999999997e-05,
+    "grad_norm": 1.4489128589630127
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "e109ddab7a9c4124abf96fcdd285d611",
+    "run_name": "exp3-baseline-no-clip",
+    "final_step": null,
+    "train_loss": 4.719095706939697,
+    "val_loss": 6.362817788124085,
+    "perplexity": 579.8780298850469,
+    "learning_rate": 2.9999999999999997e-05,
+    "grad_norm": 1.4710936546325684
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "32feb8a56d6c402c89e4ba9b558368e2",
+    "run_name": "exp3-baseline-with-clip",
+    "final_step": null,
+    "train_loss": 4.703365325927734,
+    "val_loss": 6.366902494430542,
+    "perplexity": 582.2515055060284,
+    "learning_rate": 2.9999999999999997e-05,
+    "grad_norm": 1.4872870445251465
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "8454a8582068484688375b3e868644a8",
+    "run_name": "exp4-lr-3e4",
+    "final_step": null,
+    "train_loss": 4.727603912353516,
+    "val_loss": 6.394948267936707,
+    "perplexity": 598.8123446235148,
+    "learning_rate": 2.9999999999999997e-05,
+    "grad_norm": 1.490862250328064
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "f26c046be0fd4e8c808a79738d3ebc9c",
+    "run_name": "train-20260326-201318",
+    "final_step": null,
+    "train_loss": 4.648435592651367,
+    "val_loss": 6.4157905101776125,
+    "perplexity": 611.4239066481256,
+    "learning_rate": 2.9999999999999997e-05,
+    "grad_norm": 1.5343317985534668
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "b6c9ff7829674287ab0dd82de940b585",
+    "run_name": "exp4-lr-1e4",
+    "final_step": null,
+    "train_loss": 6.046695709228516,
+    "val_loss": 6.56659779548645,
+    "perplexity": 710.9469369809473,
+    "learning_rate": 1e-05,
+    "grad_norm": 1.0166237354278564
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "13c39ccdfdf7417492bbb1473a5b150a",
+    "run_name": "exp2-larger-6L-256d-8h",
+    "final_step": null,
+    "train_loss": 2.4583489894866943,
+    "val_loss": 7.393116903305054,
+    "perplexity": 1624.7624562433332,
+    "learning_rate": 2.9999999999999997e-05,
+    "grad_norm": 2.8768742084503174
+  },
+  {
+    "experiment_name": "nanogpt-lab",
+    "run_id": "974e16ca4f8d439a9594aeb50987a90d",
+    "run_name": "exp4-lr-1e3",
+    "final_step": null,
+    "train_loss": 3.270601272583008,
+    "val_loss": 7.432584619522094,
+    "perplexity": 1690.1703802004145,
+    "learning_rate": 0.0001,
+    "grad_norm": 1.5334216356277466
+  }
+]
