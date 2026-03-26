@@ -174,7 +174,16 @@ def train(config_path: Path) -> None:
                 raise RuntimeError("Training loss is None")
             scaler.scale(loss).backward()
             scaler.unscale_(optimizer)
-            grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+            if grad_clip > 0:
+                grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
+            else:
+                # No clipping run: still record gradient norm for experiment comparison.
+                grad_norm = torch.norm(
+                    torch.stack(
+                        [p.grad.detach().norm() for p in model.parameters() if p.grad is not None]
+                    ),
+                    p=2,
+                )
             scaler.step(optimizer)
             scaler.update()
             scheduler.step()
