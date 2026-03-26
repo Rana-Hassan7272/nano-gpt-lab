@@ -67,6 +67,54 @@ Config target: `n_layers=6`, `n_heads=8`, `d_model=256`, `max_steps=5000`
 - Note:
   - No output from `cp` is normal when copy succeeds.
 
+## Experiment 4 — Learning rate effect
+
+Date: 2026-03-26  
+Environment: Colab (GPU run)  
+Model: baseline (`n_layers=4`, `n_heads=4`, `d_model=128`)  
+All runs: `max_steps=5000`
+
+### Run A: LR = 1e-3 (`configs/exp4_lr_1e3.yaml`)
+- Runtime: ~3m
+- End-of-run metrics (step 5000):
+  - `train_loss=3.2706`
+  - `val_loss=7.4326`
+  - `perplexity=1690.17`
+- Checkpoint:
+  - `/content/nano-gpt-lab/results/checkpoints/step_5000.pt`
+
+### Run B: LR = 3e-4 (`configs/exp4_lr_3e4.yaml`)
+- Runtime: ~3m
+- End-of-run metrics (step 5000):
+  - `train_loss=4.7276`
+  - `val_loss=6.3949`
+  - `perplexity=598.81`
+- Checkpoint:
+  - `/content/nano-gpt-lab/results/checkpoints/step_5000.pt`
+
+### Run C: LR = 1e-4 (`configs/exp4_lr_1e4.yaml`)
+- Runtime: ~3m 23s
+- End-of-run metrics (step 5000):
+  - `train_loss=6.0467`
+  - `val_loss=6.5666`
+  - `perplexity=710.95`
+- Checkpoint:
+  - `/content/nano-gpt-lab/results/checkpoints/step_5000.pt`
+
+### LR finding
+- `lr=3e-4` is best among the LR sweep by validation perplexity.
+- `lr=1e-3` is too aggressive: much worse validation perplexity.
+- `lr=1e-4` is too conservative: worse than `3e-4` validation perplexity, but stable.
+
+## Phase 4 Results Table
+
+| Experiment | Params | Perplexity | Train time | Key finding |
+|---|---:|---:|---|---|
+| Baseline | 0.79M | 561.06 | ~3m | stable baseline |
+| Larger | 4.72M | 1624.76 | ~6m | larger overfits / worse val perplexity |
+| No clip | 0.79M | 579.88 | ~3m | no divergence observed at this scale |
+| Best LR | 0.79M | 598.81 | ~3m | LR=3e-4 best among {1e-3,3e-4,1e-4} |
+
 ### Observations
 - Training loss decreased strongly vs baseline.
 - Validation loss/perplexity remained high and worsened over later steps.
