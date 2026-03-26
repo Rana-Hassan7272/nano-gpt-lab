@@ -103,7 +103,7 @@ All runs: `max_steps=5000`
 
 ### LR finding
 - `lr=3e-4` is best among the LR sweep by validation perplexity.
-- `lr=1e-3` is too aggressive: much worse validation perplexity.
+- `lr=1e-3` iss too aggressive: much worse validation perplexity.
 - `lr=1e-4` is too conservative: worse than `3e-4` validation perplexity, but stable.
 
 ## Phase 4 Results Table
