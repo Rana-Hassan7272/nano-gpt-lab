@@ -72,3 +72,47 @@ Config target: `n_layers=6`, `n_heads=8`, `d_model=256`, `max_steps=5000`
 - Validation loss/perplexity remained high and worsened over later steps.
 - This suggests overfitting / mismatch under current data scale and hyperparameters.
 - Keep this result as-is for honest comparison in Phase 4 table.
+
+## Experiment 3 — Training stability (clip vs no-clip)
+
+Date: 2026-03-26  
+Environment: Colab (GPU run)  
+Model: baseline (`n_layers=4`, `n_heads=4`, `d_model=128`, `max_steps=5000`)  
+Runtime: ~3 min per run
+
+### Run A: with gradient clipping
+- Config: `configs/exp3_clip.yaml` (`grad_clip=1.0`)
+- Command:
+  - `python training/trainer.py --config configs/exp3_clip.yaml`
+- End-of-run metrics:
+  - `step=5000`
+  - `train_loss=4.7034`
+  - `val_loss=6.3669`
+  - `perplexity=582.25`
+  - observed grad norm near end: ~`1.49` (max observed in shared logs: ~`1.61`)
+- Checkpoint:
+  - `/content/nano-gpt-lab/results/checkpoints/step_5000.pt`
+
+### Run B: without gradient clipping
+- Config: `configs/exp3_no_clip.yaml` (`grad_clip=0.0`)
+- Command:
+  - `python training/trainer.py --config configs/exp3_no_clip.yaml`
+- End-of-run metrics:
+  - `step=5000`
+  - `train_loss=4.7191`
+  - `val_loss=6.3628`
+  - `perplexity=579.88`
+  - observed grad norm near end: ~`1.47`
+- Checkpoint:
+  - `/content/nano-gpt-lab/results/checkpoints/step_5000.pt`
+
+### Stability finding
+- Under this baseline scale and schedule, the no-clip run did not diverge.
+- Clip vs no-clip produced very similar final validation metrics in this setup.
+- This is still a valid experimental outcome and should be reported honestly.
+
+### Backup/persistence
+- Checkpoints synced with:
+  - `cp -r results/checkpoints/* "/content/drive/MyDrive/nanogpt-lab_ckpts/" || true`
+- Note:
+  - No output from `cp` is normal when copy succeeds.
