@@ -9,6 +9,10 @@ venv/
 .venv/
 env/
 
+results/
+mlruns/
+*.json
+
 # Jupyter
 .ipynb_checkpoints/
 
