@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Training artifacts and logs
+results/checkpoints/
+results/mlruns/
+results/*.pt
+*.pt
+*.ckpt
+
+# Data artifacts (keep scripts, ignore generated binaries and local raw files)
+data/*.bin
+data/tokenizer.json
+data/input.txt
+
+# Build/distribution
+build/
+dist/
+*.egg-info/
