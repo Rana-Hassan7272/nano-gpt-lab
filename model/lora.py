@@ -177,12 +177,18 @@ class LoRALinear(nn.Module):
             p.requires_grad_(False)
 
         d_out, d_in = base_layer.weight.shape   # (out_features, in_features)
+        param_device = base_layer.weight.device
+        param_dtype = base_layer.weight.dtype
 
         # ── LoRA matrices ─────────────────────────────────────────────────────
         # A ∈ R^{r × d_in}   down-projection  (random Kaiming init)
         # B ∈ R^{d_out × r}  up-projection    (zero init → ΔW = 0 at start)
-        self.lora_A = nn.Parameter(torch.empty(rank, d_in))
-        self.lora_B = nn.Parameter(torch.zeros(d_out, rank))  # zero init
+        self.lora_A = nn.Parameter(
+            torch.empty(rank, d_in, device=param_device, dtype=param_dtype)
+        )
+        self.lora_B = nn.Parameter(
+            torch.zeros(d_out, rank, device=param_device, dtype=param_dtype)
+        )  # zero init
 
         # ── Dropout on the LoRA path only ─────────────────────────────────────
         self.lora_drop = nn.Dropout(dropout) if dropout > 0.0 else nn.Identity()
