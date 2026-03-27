@@ -196,20 +196,24 @@ Phase 5 — LoRA Fine-tuning Addition
 Week 6
 Goal: Add LoRA fine-tuning to cover the fine-tuning gap without new hardware.
 Step 1 — Understand LoRA mathematically
-LoRA freezes original weights. It adds two small matrices A and B where the update is A×B. Total new parameters = tiny fraction of original. Write a one page explanation in your own words before writing any code.
+LoRA freezes original weights and learns a low-rank update.
+Write a one page explanation in your own words before writing any code, including:
+- what is frozen (base weights)
+- what is trained (LoRA matrices A and B)
+- the forward update rule and scaling
+- why rank=4 keeps trainable params small
+Use the best Phase 4 baseline checkpoint (`exp1/step_5000.pt`) as the starting point for LoRA fine-tuning.
 Step 2 — Implement LoRA layers
-Write model/lora.py:
-pythonclass LoRALayer:
-    # Freeze original weight
-    # Add trainable matrix A (d_model × rank)
-    # Add trainable matrix B (rank × d_model)
-    # Forward: original_output + (x @ A @ B) * scale
-```
-
-Use rank=4. Very small but proves you understand the concept.
+Write `model/lora.py` implementing production LoRA modules that can wrap `nn.Linear`.
+Apply LoRA (rank=4) to attention projection linears:
+- `W_q`, `W_k`, `W_v`, and `W_o` (or at minimum `W_q` and `W_v` as a smaller ablation)
+Ensure only LoRA adapter parameters require gradients; base model parameters remain frozen.
 
 **Step 3 — Fine-tune experiment**
-Take your best trained checkpoint. Apply LoRA. Fine-tune on a different small text dataset — try poetry or news headlines, something clearly different from Shakespeare. Train for 1000 steps. Compare outputs before and after fine-tuning.
+Take your best trained checkpoint and apply LoRA adapters.
+Fine-tune on a different small text dataset (poetry/news) for 1000 steps.
+Reuse the Phase 2 tokenizer and build fine-tune `train.bin`/`val.bin` from the new corpus.
+Generate samples before/after fine-tuning and compare them.
 
 **Step 4 — Document parameter efficiency**
 Record and display:
