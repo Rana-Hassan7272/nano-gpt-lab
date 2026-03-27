@@ -33,6 +33,8 @@ results/*.pt
 data/*.bin
 data/input.txt
 data/poetry.txt
+# Allow tokenizer (important)
+!data/tokenizer.json
 
 # Build/distribution
 build/
