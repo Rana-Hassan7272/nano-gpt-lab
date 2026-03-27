@@ -31,8 +31,8 @@ results/*.pt
 
 # Data artifacts (keep scripts, ignore generated binaries and local raw files)
 data/*.bin
-data/tokenizer.json
 data/input.txt
+data/poetry.txt
 
 # Build/distribution
 build/
