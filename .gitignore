@@ -13,8 +13,7 @@ env/
 mlruns/
 *.json
 
-# Jupyter
-.ipynb_checkpoints/
+
 
 # OS/editor files
 .DS_Store
@@ -24,8 +23,8 @@ Thumbs.db
 
 # Training artifacts and logs
 
-*.pt
-*.ckpt
+
+
 
 # Data artifacts (keep scripts, ignore generated binaries and local raw files)
 data/*.bin
