@@ -9,7 +9,7 @@ venv/
 .venv/
 env/
 
-results/
+
 mlruns/
 *.json
 
@@ -23,9 +23,7 @@ Thumbs.db
 .vscode/
 
 # Training artifacts and logs
-results/checkpoints/
-results/mlruns/
-results/*.pt
+
 *.pt
 *.ckpt
 
@@ -40,3 +38,7 @@ data/poetry.txt
 build/
 dist/
 *.egg-info/
+
+# Frontend dependencies
+node_modules/
+dashboard/node_modules/
