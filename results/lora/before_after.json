@@ -1,0 +1,24 @@
+{
+  "prompt": "O moon,",
+  "base_checkpoint": "results/checkpoints/exp1_step5000.pt",
+  "adapter_path": "results/lora/lora_poetry_rank4.pt",
+  "lora_config_loaded": {
+    "rank": 4,
+    "alpha": 4.0,
+    "dropout": 0.05,
+    "target_modules": [
+      "W_q",
+      "W_k",
+      "W_v",
+      "W_o"
+    ],
+    "bias": "none"
+  },
+  "generation_args": {
+    "max_new": 80,
+    "temperature": 0.8,
+    "top_k": 40
+  },
+  "base_output": "O moon,'tis he that see\nOur sever admits of ourselves,--for drumours\nIn dutes and deed\nWith troops of royal grace,\nAnd made hastilulls their flesh\nMight of Hereford, that Henry Bolingbroke: he hath\nAfter the temper to the seas of that death\nAnd set the restless than their eye-ears,\nDuring the royal self-upultitud",
+  "lora_output": "O moon,'tis no bebe;\nFor the feast was more feed,\nAnd now I need no eyes in hands\nMy father's eyes on saint, at hand,\n'Tis very daily is here.\nAs many in fire unerious.\nBut so so it were for prove\nMy pass unhappy.\nSuch divers like a like\nThe cushion\nOf stir"
+}

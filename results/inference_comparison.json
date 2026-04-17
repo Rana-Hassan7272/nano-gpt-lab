@@ -1,0 +1,21 @@
+{
+  "prompt": "To be, or not to be,",
+  "settings": {
+    "max_new_tokens": 64,
+    "temperature": 0.8,
+    "top_p": 0.9,
+    "top_k": 40,
+    "strategy": "top_p"
+  },
+  "llm_inference_project": {
+    "model_name": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    "variant_note": "tier used by API routing; likely 4-bit/8-bit/FP16 based on router decision",
+    "device": "Tesla T4",
+    "elapsed_seconds": 4.134,
+    "tokens_generated": 64,
+    "tokens_per_second": 15.48,
+    "vram_gb": 1.941,
+    "output_sample": "that is the question. In Shakespeare's play, Hamlet vividly portrays ...",
+    "source": "API endpoint /generate"
+  }
+}
