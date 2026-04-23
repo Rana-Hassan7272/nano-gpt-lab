@@ -26,6 +26,7 @@ MODEL_PATH      : path to NanoGPT checkpoint  (default: results/colab-checkpoint
 DEVICE          : 'cpu' | 'cuda'              (default: auto-detect)
 MAX_NEW_TOKENS  : hard cap on generation      (default: 500)
 RESULTS_DIR     : directory with experiment JSONs (default: results/)
+STRICT_STARTUP  : '1'/'true' to fail fast if model/tokenizer cannot load
 """
 
 import os
@@ -52,6 +53,14 @@ _model      = None
 _tokenizer  = None
 _config     = None
 _device     = None
+_startup_mode = "unknown"
+
+
+def _env_flag(name: str, default: bool = False) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
 # ===========================================================================
@@ -82,10 +91,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def load_model() -> None:
-    global _model, _tokenizer, _config, _device
+    global _model, _tokenizer, _config, _device, _startup_mode
 
     device_str = os.getenv("DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
     _device    = torch.device(device_str)
+    strict_startup = _env_flag("STRICT_STARTUP", default=False)
+    _startup_mode = "strict" if strict_startup else "stub-allowed"
 
     model_path = os.getenv(
         "MODEL_PATH",
@@ -99,6 +110,10 @@ async def load_model() -> None:
         _config = _model.config
         print(f"[startup] Model loaded from {model_path} on {_device}")
     except Exception as e:
+        if strict_startup:
+            raise RuntimeError(
+                f"STRICT_STARTUP enabled: failed to load model checkpoint '{model_path}': {e}"
+            ) from e
         print(f"[startup] WARNING: Could not load model checkpoint: {e}")
         print("[startup] Running in stub mode — generation will return mock output")
         _model  = None
@@ -111,6 +126,10 @@ async def load_model() -> None:
         _tokenizer = BPETokenizer.load(tok_path)
         print(f"[startup] Tokenizer loaded from {tok_path}")
     except Exception as e:
+        if strict_startup:
+            raise RuntimeError(
+                f"STRICT_STARTUP enabled: failed to load tokenizer '{os.getenv('TOKENIZER_PATH', 'data/tokenizer.json')}': {e}"
+            ) from e
         print(f"[startup] WARNING: Tokenizer not found ({e}). Using char-level fallback.")
         _tokenizer = _CharTokenizer()
 
@@ -420,148 +439,198 @@ async def model_info() -> ModelInfoResponse:
 # Endpoint 3: GET /experiments
 # ===========================================================================
 
-# Hardcoded Phase 4 + Phase 5 results as fallback when no JSON files exist
-_HARDCODED_RESULTS = {
-    "experiments": [
-        {
-            "id":          "exp1_baseline",
-            "label":       "Baseline (1.2M)",
-            "params":      1_827_968,
-            "n_layers":    4,
-            "n_heads":     4,
-            "d_model":     128,
-            "lr":          3e-4,
-            "grad_clip":   True,
-            "max_steps":   5000,
-            "final_perplexity": 28.4,
-            "train_time_min":   18,
-            "key_finding": "Stable training, good baseline",
-            "loss_curve": [
-                {"step": 0,    "train_loss": 9.12, "val_loss": 9.10},
-                {"step": 500,  "train_loss": 6.43, "val_loss": 6.51},
-                {"step": 1000, "train_loss": 5.21, "val_loss": 5.35},
-                {"step": 1500, "train_loss": 4.58, "val_loss": 4.74},
-                {"step": 2000, "train_loss": 4.12, "val_loss": 4.30},
-                {"step": 2500, "train_loss": 3.81, "val_loss": 4.01},
-                {"step": 3000, "train_loss": 3.58, "val_loss": 3.78},
-                {"step": 3500, "train_loss": 3.41, "val_loss": 3.62},
-                {"step": 4000, "train_loss": 3.28, "val_loss": 3.50},
-                {"step": 4500, "train_loss": 3.18, "val_loss": 3.41},
-                {"step": 5000, "train_loss": 3.10, "val_loss": 3.34},
-            ],
-        },
-        {
-            "id":          "exp2_larger",
-            "label":       "Larger (6M)",
-            "params":      6_000_000,
-            "n_layers":    6,
-            "n_heads":     6,
-            "d_model":     256,
-            "lr":          3e-4,
-            "grad_clip":   True,
-            "max_steps":   5000,
-            "final_perplexity": 22.1,
-            "train_time_min":   32,
-            "key_finding": "Better perplexity with more capacity",
-            "loss_curve": [
-                {"step": 0,    "train_loss": 9.15, "val_loss": 9.11},
-                {"step": 500,  "train_loss": 5.98, "val_loss": 6.09},
-                {"step": 1000, "train_loss": 4.72, "val_loss": 4.89},
-                {"step": 1500, "train_loss": 4.05, "val_loss": 4.22},
-                {"step": 2000, "train_loss": 3.61, "val_loss": 3.81},
-                {"step": 2500, "train_loss": 3.31, "val_loss": 3.52},
-                {"step": 3000, "train_loss": 3.08, "val_loss": 3.31},
-                {"step": 3500, "train_loss": 2.90, "val_loss": 3.15},
-                {"step": 4000, "train_loss": 2.76, "val_loss": 3.02},
-                {"step": 4500, "train_loss": 2.65, "val_loss": 2.93},
-                {"step": 5000, "train_loss": 2.56, "val_loss": 2.85},
-            ],
-        },
-        {
-            "id":          "exp3_no_clip",
-            "label":       "No Grad Clip",
-            "params":      1_827_968,
-            "n_layers":    4,
-            "n_heads":     4,
-            "d_model":     128,
-            "lr":          3e-4,
-            "grad_clip":   False,
-            "max_steps":   5000,
-            "final_perplexity": None,
-            "train_time_min":   None,
-            "key_finding": "Gradient explosion — training diverged",
-            "loss_curve": [
-                {"step": 0,    "train_loss": 9.12, "val_loss": 9.10},
-                {"step": 500,  "train_loss": 6.51, "val_loss": 6.62},
-                {"step": 1000, "train_loss": 5.34, "val_loss": 5.48},
-                {"step": 1500, "train_loss": 7.82, "val_loss": 8.10},
-                {"step": 2000, "train_loss": 18.4, "val_loss": 19.2},
-                {"step": 2500, "train_loss": None, "val_loss": None},
-            ],
-        },
-        {
-            "id":          "exp4_lr_sweep",
-            "label":       "LR Sweep",
-            "params":      1_827_968,
-            "n_layers":    4,
-            "n_heads":     4,
-            "d_model":     128,
-            "grad_clip":   True,
-            "max_steps":   5000,
-            "key_finding": "3e-4 optimal; 1e-3 diverges; 1e-4 too slow",
-            "lr_curves": {
-                "1e-3": [
-                    {"step": 0,    "val_loss": 9.12},
-                    {"step": 500,  "val_loss": 6.21},
-                    {"step": 1000, "val_loss": 8.43},
-                    {"step": 1500, "val_loss": 14.2},
-                    {"step": 2000, "val_loss": None},
-                ],
-                "3e-4": [
-                    {"step": 0,    "val_loss": 9.10},
-                    {"step": 500,  "val_loss": 6.51},
-                    {"step": 1000, "val_loss": 5.35},
-                    {"step": 2000, "val_loss": 4.30},
-                    {"step": 3000, "val_loss": 3.78},
-                    {"step": 4000, "val_loss": 3.50},
-                    {"step": 5000, "val_loss": 3.34},
-                ],
-                "1e-4": [
-                    {"step": 0,    "val_loss": 9.11},
-                    {"step": 500,  "val_loss": 7.82},
-                    {"step": 1000, "val_loss": 6.94},
-                    {"step": 2000, "val_loss": 5.91},
-                    {"step": 3000, "val_loss": 5.14},
-                    {"step": 4000, "val_loss": 4.62},
-                    {"step": 5000, "val_loss": 4.24},
-                ],
-            },
-        },
-    ],
-    "lora": {
-        "base_params":  1_827_968,
-        "lora_params":  16_384,
-        "lora_pct":     0.8963,
+def _run_matches(run_name: str, token: str) -> bool:
+    return token.lower() in (run_name or "").lower()
+
+
+def _pick_run(runs: List[Dict[str, Any]], token: str) -> Optional[Dict[str, Any]]:
+    matches = [r for r in runs if _run_matches(str(r.get("run_name", "")), token)]
+    if not matches:
+        return None
+    # Prefer the run with best validation loss for this family.
+    return min(matches, key=lambda r: float(r.get("val_loss", 1e9)))
+
+
+def _format_experiment_from_run(
+    run: Dict[str, Any],
+    exp_id: str,
+    label: str,
+    params: int,
+    key_finding: str,
+    train_time_min: int,
+) -> Dict[str, Any]:
+    return {
+        "id": exp_id,
+        "label": label,
+        "params": params,
+        "final_val_loss": run.get("val_loss"),
+        "final_perplexity": run.get("perplexity"),
+        "train_time_min": train_time_min,
+        "key_finding": key_finding,
+        "loss_curve": [],
+    }
+
+
+def _build_normalized_experiment_payload(results_dir: Path) -> Dict[str, Any]:
+    mlflow_path = results_dir / "mlflow_runs_summary.json"
+    if not mlflow_path.exists():
+        raise FileNotFoundError(f"Missing required artifact: {mlflow_path}")
+
+    runs = json.loads(mlflow_path.read_text(encoding="utf-8"))
+    if not isinstance(runs, list):
+        raise ValueError("results/mlflow_runs_summary.json must contain a JSON list")
+
+    exp2 = _pick_run(runs, "exp2-larger")
+    exp3_clip = _pick_run(runs, "exp3-baseline-with-clip")
+    exp3_no_clip = _pick_run(runs, "exp3-baseline-no-clip")
+    lr_1e3 = _pick_run(runs, "exp4-lr-1e3")
+    lr_3e4 = _pick_run(runs, "exp4-lr-3e4")
+    lr_1e4 = _pick_run(runs, "exp4-lr-1e4")
+
+    excluded_tokens = ["exp2-", "exp3-", "exp4-"]
+    baseline_candidates = [
+        r for r in runs if not any(_run_matches(str(r.get("run_name", "")), t) for t in excluded_tokens)
+    ]
+    baseline = min(baseline_candidates, key=lambda r: float(r.get("val_loss", 1e9))) if baseline_candidates else None
+
+    experiments = []
+    summary_table = []
+
+    if baseline:
+        experiments.append(
+            _format_experiment_from_run(
+                baseline,
+                exp_id="exp1_baseline",
+                label="Baseline",
+                params=790_000,
+                key_finding="Stable baseline at this scale",
+                train_time_min=3,
+            )
+        )
+        summary_table.append(
+            {
+                "experiment": "Baseline",
+                "params": "0.79M",
+                "perplexity": baseline.get("perplexity"),
+                "train_time": "~3 min",
+                "key_finding": "Stable baseline at this scale",
+            }
+        )
+
+    if exp2:
+        experiments.append(
+            _format_experiment_from_run(
+                exp2,
+                exp_id="exp2_larger",
+                label="Larger model",
+                params=4_720_000,
+                key_finding="Larger model overfit under fixed budget",
+                train_time_min=6,
+            )
+        )
+        summary_table.append(
+            {
+                "experiment": "Larger",
+                "params": "4.72M",
+                "perplexity": exp2.get("perplexity"),
+                "train_time": "~6 min",
+                "key_finding": "Overfit under fixed budget",
+            }
+        )
+
+    if exp3_clip:
+        experiments.append(
+            _format_experiment_from_run(
+                exp3_clip,
+                exp_id="exp3_clip",
+                label="With grad clip",
+                params=790_000,
+                key_finding="Stable baseline with clipping",
+                train_time_min=3,
+            )
+        )
+
+    if exp3_no_clip:
+        experiments.append(
+            _format_experiment_from_run(
+                exp3_no_clip,
+                exp_id="exp3_no_clip",
+                label="No grad clip",
+                params=790_000,
+                key_finding="Similar to clipped run in this setup",
+                train_time_min=3,
+            )
+        )
+        summary_table.append(
+            {
+                "experiment": "No Clip",
+                "params": "0.79M",
+                "perplexity": exp3_no_clip.get("perplexity"),
+                "train_time": "~3 min",
+                "key_finding": "Similar to clipped run",
+            }
+        )
+
+    lr_curves: Dict[str, List[Dict[str, Any]]] = {}
+    if lr_1e3:
+        lr_curves["1e-3"] = [{"step": 5000, "val_loss": lr_1e3.get("val_loss")}]
+    if lr_3e4:
+        lr_curves["3e-4"] = [{"step": 5000, "val_loss": lr_3e4.get("val_loss")}]
+    if lr_1e4:
+        lr_curves["1e-4"] = [{"step": 5000, "val_loss": lr_1e4.get("val_loss")}]
+
+    if lr_curves:
+        experiments.append(
+            {
+                "id": "exp4_lr_sweep",
+                "label": "LR Sweep",
+                "params": 790_000,
+                "key_finding": "3e-4 best among tested LRs",
+                "lr_curves": lr_curves,
+            }
+        )
+    if lr_3e4:
+        summary_table.append(
+            {
+                "experiment": "Best LR",
+                "params": "0.79M",
+                "perplexity": lr_3e4.get("perplexity"),
+                "train_time": "~3 min",
+                "key_finding": "3e-4 best among tested LRs",
+            }
+        )
+
+    lora = {
+        "base_params": 1_827_968,
+        "lora_params": 16_384,
+        "lora_pct": 0.8963,
         "reduction_factor": 111.57,
-        "adapter_kb":   64.0,
-        "rank":         4,
-        "alpha":        4.0,
+        "adapter_kb": 64.0,
+        "rank": 4,
+        "alpha": 4.0,
         "target_modules": ["W_q", "W_k", "W_v", "W_o"],
         "fine_tune_steps": 1000,
         "val_loss_curve": [
-            {"step": 800,  "val_loss": 5.4298, "ppl": 228.09},
-            {"step": 900,  "val_loss": 5.4226, "ppl": 226.47},
+            {"step": 800, "val_loss": 5.4298, "ppl": 228.09},
+            {"step": 900, "val_loss": 5.4226, "ppl": 226.47},
             {"step": 1000, "val_loss": 5.3922, "ppl": 219.68},
         ],
-    },
-    "summary_table": [
-        {"experiment": "Baseline",   "params": "1.2M", "perplexity": 28.4,    "train_time": "18 min", "key_finding": "Stable training"},
-        {"experiment": "Larger",     "params": "6M",   "perplexity": 22.1,    "train_time": "32 min", "key_finding": "Better perplexity"},
-        {"experiment": "No Clip",    "params": "1.2M", "perplexity": "∞",     "train_time": "stopped","key_finding": "Exploding gradients"},
-        {"experiment": "Best LR",    "params": "1.2M", "perplexity": 26.8,    "train_time": "18 min", "key_finding": "3e-4 optimal"},
-        {"experiment": "LoRA FT",    "params": "16K",  "perplexity": 219.68,  "train_time": "~5 min", "key_finding": "0.9% params, domain shift"},
-    ],
-}
+    }
+    summary_table.append(
+        {
+            "experiment": "LoRA FT",
+            "params": "16K",
+            "perplexity": 219.68,
+            "train_time": "~5 min",
+            "key_finding": "0.9% params, domain shift",
+        }
+    )
+
+    return {
+        "experiments": experiments,
+        "lora": lora,
+        "summary_table": summary_table,
+    }
 
 
 @app.get("/experiments")
@@ -570,24 +639,14 @@ async def get_experiments() -> Dict[str, Any]:
     Return all Phase 4 experiment results and Phase 5 LoRA data as JSON.
     Used by the React dashboard's Experiment Results panel.
 
-    Tries to load from results/ directory first; falls back to hardcoded data.
+    Builds one normalized payload from committed experiment artifacts.
     """
     results_dir = Path(os.getenv("RESULTS_DIR", "results"))
-
-    # Try to load real experiment JSONs from disk
-    loaded = {}
-    for json_file in results_dir.glob("*.json"):
-        try:
-            with open(json_file) as f:
-                loaded[json_file.stem] = json.load(f)
-        except Exception:
-            pass
-
-    if loaded:
-        return {"source": "disk", "data": loaded}
-
-    # Fall back to hardcoded Phase 4/5 results
-    return {"source": "hardcoded", "data": _HARDCODED_RESULTS}
+    try:
+        payload = _build_normalized_experiment_payload(results_dir)
+        return {"source": "normalized", "data": payload}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to build experiments payload: {e}")
 
 
 @app.get("/inference/compare")
@@ -664,6 +723,8 @@ async def health() -> Dict[str, Any]:
         "status":       "ok",
         "model_loaded": _model is not None,
         "device":       str(_device),
+        "startup_mode": _startup_mode,
+        "degraded": _model is None,
         "timestamp":    time.time(),
     }
 

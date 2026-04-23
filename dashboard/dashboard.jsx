@@ -24,47 +24,29 @@ const C = {
 // ─── Hardcoded experiment data (matches API /experiments fallback) ─────────────
 const EXPERIMENTS = [
   {
-    id:"exp1", label:"Baseline 1.2M", color: C.exp[0],
-    params:"1.2M", perplexity:28.4, train_time:"18 min",
-    key_finding:"Stable training",
-    curve:[
-      {step:0,train:9.12,val:9.10},{step:500,train:6.43,val:6.51},
-      {step:1000,train:5.21,val:5.35},{step:1500,train:4.58,val:4.74},
-      {step:2000,train:4.12,val:4.30},{step:2500,train:3.81,val:4.01},
-      {step:3000,train:3.58,val:3.78},{step:3500,train:3.41,val:3.62},
-      {step:4000,train:3.28,val:3.50},{step:4500,train:3.18,val:3.41},
-      {step:5000,train:3.10,val:3.34},
-    ],
+    id:"exp1", label:"Baseline 0.79M", color: C.exp[0],
+    params:"0.79M", perplexity:561.06, train_time:"~3 min",
+    key_finding:"Stable baseline at this scale",
+    curve:[],
   },
   {
-    id:"exp2", label:"Larger 6M", color: C.exp[1],
-    params:"6M", perplexity:22.1, train_time:"32 min",
-    key_finding:"Better perplexity",
-    curve:[
-      {step:0,train:9.15,val:9.11},{step:500,train:5.98,val:6.09},
-      {step:1000,train:4.72,val:4.89},{step:1500,train:4.05,val:4.22},
-      {step:2000,train:3.61,val:3.81},{step:2500,train:3.31,val:3.52},
-      {step:3000,train:3.08,val:3.31},{step:3500,train:2.90,val:3.15},
-      {step:4000,train:2.76,val:3.02},{step:4500,train:2.65,val:2.93},
-      {step:5000,train:2.56,val:2.85},
-    ],
+    id:"exp2", label:"Larger 4.72M", color: C.exp[1],
+    params:"4.72M", perplexity:1624.76, train_time:"~6 min",
+    key_finding:"Larger model overfit under current budget",
+    curve:[],
   },
   {
     id:"exp3", label:"No Grad Clip", color: C.exp[2],
-    params:"1.2M", perplexity:"∞", train_time:"stopped",
-    key_finding:"Exploding gradients",
-    curve:[
-      {step:0,train:9.12,val:9.10},{step:500,train:6.51,val:6.62},
-      {step:1000,train:5.34,val:5.48},{step:1500,train:7.82,val:8.10},
-      {step:2000,train:18.4,val:19.2},
-    ],
+    params:"0.79M", perplexity:579.88, train_time:"~3 min",
+    key_finding:"Similar to clipped run in this setup",
+    curve:[],
   },
 ];
 
 const LR_CURVES = {
-  "1e-3":  [{step:0,val:9.12},{step:500,val:6.21},{step:1000,val:8.43},{step:1500,val:14.2}],
-  "3e-4":  [{step:0,val:9.10},{step:500,val:6.51},{step:1000,val:5.35},{step:2000,val:4.30},{step:3000,val:3.78},{step:4000,val:3.50},{step:5000,val:3.34}],
-  "1e-4":  [{step:0,val:9.11},{step:500,val:7.82},{step:1000,val:6.94},{step:2000,val:5.91},{step:3000,val:5.14},{step:4000,val:4.62},{step:5000,val:4.24}],
+  "1e-3":  [{step:5000,val:7.4326}],
+  "3e-4":  [{step:5000,val:6.3949}],
+  "1e-4":  [{step:5000,val:6.5666}],
 };
 
 const ARCH_PARAMS = [
@@ -94,39 +76,18 @@ function buildExperimentsView(payload) {
       lrCurves: LR_CURVES,
       lora: LORA_DATA,
       summaryRows: [
-        {exp:"Baseline 1.2M", params:"1.2M", ppl:28.4,  time:"18 min", finding:"Stable training"},
-        {exp:"Larger 6M",     params:"6M",   ppl:22.1,  time:"32 min", finding:"Better perplexity"},
-        {exp:"No Grad Clip",  params:"1.2M", ppl:"∞",   time:"stopped",finding:"Exploding gradients"},
-        {exp:"Best LR",       params:"1.2M", ppl:26.8,  time:"18 min", finding:"3e-4 optimal"},
+        {exp:"Baseline 0.79M", params:"0.79M", ppl:561.06,  time:"~3 min", finding:"Stable baseline at this scale"},
+        {exp:"Larger 4.72M",   params:"4.72M", ppl:1624.76, time:"~6 min", finding:"Overfit under fixed budget"},
+        {exp:"No Grad Clip",   params:"0.79M", ppl:579.88,  time:"~3 min", finding:"Similar to clipped run"},
+        {exp:"Best LR",        params:"0.79M", ppl:598.81,  time:"~3 min", finding:"3e-4 best among tested LRs"},
         {exp:"LoRA FT",       params:"16K",  ppl:219.7, time:"~5 min", finding:"0.9% params, domain shift"},
       ],
     };
   }
 
-  const disk = payload.source === "disk";
   const data = payload.data;
 
-  if (disk && Array.isArray(data.mlflow_runs_summary)) {
-    const runs = data.mlflow_runs_summary;
-    const sorted = [...runs].sort((a, b) => (a.val_loss ?? 1e9) - (b.val_loss ?? 1e9));
-    const best = sorted[0];
-    const summaryRows = sorted.slice(0, 8).map((r) => ({
-      exp: r.run_name || r.run_id.slice(0, 8),
-      params: r.run_name?.includes("larger") ? "4.72M" : "1.81M",
-      ppl: r.perplexity?.toFixed ? Number(r.perplexity.toFixed(2)) : r.perplexity,
-      time: "logged",
-      finding: `val=${r.val_loss?.toFixed ? r.val_loss.toFixed(4) : r.val_loss}`,
-    }));
-    const lora = data.phase5_parameter_efficiency?.lora || LORA_DATA;
-    return {
-      experiments: EXPERIMENTS,
-      lrCurves: LR_CURVES,
-      lora,
-      summaryRows: best ? summaryRows : [],
-    };
-  }
-
-  if (!disk && Array.isArray(data.experiments)) {
+  if (Array.isArray(data.experiments)) {
     const experiments = data.experiments.map((e, i) => ({
       id: e.id || `exp${i + 1}`,
       label: e.label || e.id || `exp${i + 1}`,
@@ -403,10 +364,10 @@ function ExperimentResults() {
   const summaryRows = viewData.summaryRows.length
     ? viewData.summaryRows
     : [
-      {exp:"Baseline 1.2M", params:"1.2M", ppl:28.4,  time:"18 min", finding:"Stable training"},
-      {exp:"Larger 6M",     params:"6M",   ppl:22.1,  time:"32 min", finding:"Better perplexity"},
-      {exp:"No Grad Clip",  params:"1.2M", ppl:"∞",   time:"stopped",finding:"Exploding gradients"},
-      {exp:"Best LR",       params:"1.2M", ppl:26.8,  time:"18 min", finding:"3e-4 optimal"},
+      {exp:"Baseline 0.79M", params:"0.79M", ppl:561.06,  time:"~3 min", finding:"Stable baseline at this scale"},
+      {exp:"Larger 4.72M",   params:"4.72M", ppl:1624.76, time:"~6 min", finding:"Overfit under fixed budget"},
+      {exp:"No Grad Clip",   params:"0.79M", ppl:579.88,  time:"~3 min", finding:"Similar to clipped run"},
+      {exp:"Best LR",        params:"0.79M", ppl:598.81,  time:"~3 min", finding:"3e-4 best among tested LRs"},
       {exp:"LoRA FT",       params:"16K",  ppl:219.7, time:"~5 min", finding:"0.9% params, domain shift"},
     ];
 
@@ -511,14 +472,14 @@ function ExperimentResults() {
                 <YAxis stroke={C.muted} tick={{fontSize:11}} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
                 <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
-                <Line type="monotone" dataKey="1e-3" name="lr=1e-3 (diverges)" stroke={C.accent2} strokeWidth={2} dot={false} connectNulls={false}/>
-                <Line type="monotone" dataKey="3e-4" name="lr=3e-4 (optimal)" stroke={C.accent3} strokeWidth={2.5} dot={false}/>
+                <Line type="monotone" dataKey="1e-3" name="lr=1e-3 (too aggressive)" stroke={C.accent2} strokeWidth={2} dot={false} connectNulls={false}/>
+                <Line type="monotone" dataKey="3e-4" name="lr=3e-4 (best in sweep)" stroke={C.accent3} strokeWidth={2.5} dot={false}/>
                 <Line type="monotone" dataKey="1e-4" name="lr=1e-4 (too slow)" stroke={C.muted} strokeWidth={2} dot={false}/>
               </LineChart>
             </ResponsiveContainer>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
-            {[{lr:"1e-3",c:C.accent2,note:"Diverges at step ~1500"},{lr:"3e-4",c:C.accent3,note:"Optimal — reaches 3.34 val loss"},{lr:"1e-4",c:C.muted,note:"Too slow — 4.24 at step 5000"}].map(r=>(
+            {[{lr:"1e-3",c:C.accent2,note:"Too aggressive — ppl 1690.17 at step 5000"},{lr:"3e-4",c:C.accent3,note:"Best in sweep — ppl 598.81 at step 5000"},{lr:"1e-4",c:C.muted,note:"Too slow — ppl 710.95 at step 5000"}].map(r=>(
               <div key={r.lr} style={{background:C.surface,border:`1px solid ${r.c}44`,borderRadius:10,padding:"14px 16px"}}>
                 <div style={{fontSize:20,fontWeight:700,color:r.c,fontFamily:"'DM Mono',monospace"}}>lr = {r.lr}</div>
                 <div style={{fontSize:12,color:C.textDim,marginTop:4}}>{r.note}</div>

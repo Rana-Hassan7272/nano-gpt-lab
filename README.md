@@ -217,23 +217,23 @@ Each experiment is described by exactly one YAML config in `configs/`. One confi
 
 | Experiment | Config | Params | Val Loss | Perplexity | GPU Time | Key Finding |
 |---|---|---|---|---|---|---|
-| Baseline | `train_config.yaml` | 1.2M | 3.34 | **28.4** | 18 min | Stable training floor |
-| Larger model | `exp2_larger.yaml` | 6M | 2.85 | **22.1** | 32 min | More capacity → better perplexity |
-| With grad clip | `exp3_clip.yaml` | 1.2M | 3.34 | **28.4** | 18 min | Stable |
-| No grad clip | `exp3_no_clip.yaml` | 1.2M | diverged | **∞** | stopped at ~2K steps | Exploding gradients |
-| LR = 1e-3 | `exp4_lr_1e3.yaml` | 1.2M | diverged | **∞** | stopped at ~1.5K steps | Too aggressive |
-| LR = 3e-4 | `exp4_lr_3e4.yaml` | 1.2M | 3.34 | **28.4** | 18 min | Optimal |
-| LR = 1e-4 | `exp4_lr_1e4.yaml` | 1.2M | 4.24 | **69.4** | 18 min | Too conservative |
+| Baseline | `train_config.yaml` | 0.79M | 6.3298 | **561.06** | ~3 min | Stable baseline at this scale |
+| Larger model | `exp2_larger.yaml` | 4.72M | 7.3931 | **1624.76** | ~6 min | More capacity overfit under same budget |
+| With grad clip | `exp3_clip.yaml` | 0.79M | 6.3669 | **582.25** | ~3 min | Stable |
+| No grad clip | `exp3_no_clip.yaml` | 0.79M | 6.3628 | **579.88** | ~3 min | Similar to clipped run in this setup |
+| LR = 1e-3 | `exp4_lr_1e3.yaml` | 0.79M | 7.4326 | **1690.17** | ~3 min | Too aggressive |
+| LR = 3e-4 | `exp4_lr_3e4.yaml` | 0.79M | 6.3949 | **598.81** | ~3 min | Best among tested LRs |
+| LR = 1e-4 | `exp4_lr_1e4.yaml` | 0.79M | 6.5666 | **710.95** | ~3m 23s | Too conservative |
 
 > Add chart: `docs/images/training-loss-curves.png` — Training and validation loss over 5,000 steps
 
-> Add chart: `docs/images/lr-sweep.png` — LR sweep convergence behaviour: 1e-3 diverges, 3e-4 optimal, 1e-4 too slow
+> Add chart: `docs/images/lr-sweep.png` — LR sweep behaviour: 3e-4 best, 1e-3 too aggressive, 1e-4 too slow
 
 ### What Each Experiment Demonstrates
 
-**Gradient clipping (Experiment 3):** Without `grad_clip=1.0`, a single large gradient update early in training moves the weights into a region where loss explodes. Training becomes unrecoverable within 2,000 steps. With clipping, training runs stably for the full 5,000 steps and reaches the same final perplexity. This is not a minor hyperparameter choice — it is the structural difference between training and not training on difficult data.
+**Gradient clipping (Experiment 3):** In this baseline setup, both `grad_clip=1.0` and `grad_clip=0.0` remained stable for 5,000 steps and finished with nearly identical validation perplexity (~582 vs ~580). The decision informed by this run is to keep clipping enabled as a safety default, while noting it did not materially change outcomes at this model/data scale.
 
-**LR sweep (Experiment 4):** `1e-3` overshoots the loss valley and diverges. `1e-4` converges but so slowly that 5,000 steps yields perplexity 69 versus the optimal 28. `3e-4` with warmup + cosine decay is the canonical GPT-3 recipe and the experiment confirms it empirically on this dataset.
+**LR sweep (Experiment 4):** `3e-4` gave the best validation perplexity (598.81) among the tested rates, while `1e-3` was too aggressive (1690.17) and `1e-4` was too conservative (710.95). The decision informed by this sweep is to keep `3e-4` as the default for this project while improving the training budget and data scale before drawing broader conclusions.
 
 **Warmup + cosine decay (`training/scheduler.py`):** Linear warmup for 100 steps prevents large initial gradient steps from destabilising random initialisation. Cosine decay then reduces the learning rate from peak to near-zero smoothly, enabling fine-grained convergence in the final phase. This is how GPT-3, LLaMA, Mistral, and every major LLM is trained.
 
@@ -639,6 +639,82 @@ Real issues encountered and fixed during deployment:
 **Runtime notes:** All training experiments ran on Google Colab T4 GPU. Expected times on T4: 1.2M baseline ~18 min, 6M larger ~32 min. Local CPU is 10–20× slower. The deployed Render API runs on CPU — generation is functional but latency is higher than GPU.
 
 Binary checkpoint files (`*.pt`) are not committed to the repository due to size. Re-train from the config files or run the provided Colab notebooks in `notebooks/`.
+
+### Rebuild Normalized Experiment Payload
+
+To regenerate the exact payload used by `GET /experiments` from committed artifacts:
+
+```bash
+python experiments/build_experiments_payload.py \
+  --results_dir results \
+  --output results/experiments_payload.json
+```
+
+This script reads `results/mlflow_runs_summary.json` and writes one normalized artifact (`experiments`, `lora`, `summary_table`) so dashboard/API outputs stay reproducible.
+
+### Held-out Perplexity Harness
+
+Use `experiments/evaluate_perplexity.py` for deterministic held-out evaluation with multi-seed aggregation (mean/std), and optional baseline-vs-LoRA comparison on the same validation split.
+
+```bash
+# Baseline checkpoint evaluation (val perplexity mean/std across seeds)
+python experiments/evaluate_perplexity.py \
+  --checkpoint results/colab-checkpoints/exp1_step5000.pt \
+  --val_bin data/val.bin \
+  --batch_size 32 \
+  --eval_batches 50 \
+  --seeds 42 123 999 \
+  --output_json results/eval/perplexity_eval_baseline.json
+
+# Baseline vs LoRA on identical evaluation protocol
+python experiments/evaluate_perplexity.py \
+  --checkpoint results/colab-checkpoints/exp1_step5000.pt \
+  --adapter_path results/lora/lora_poetry_rank4.pt \
+  --compare_lora \
+  --val_bin data/val.bin \
+  --batch_size 32 \
+  --eval_batches 50 \
+  --seeds 42 123 999 \
+  --output_json results/eval/perplexity_eval_baseline_vs_lora.json
+```
+
+The script writes a structured JSON report with per-seed losses/perplexities and aggregate mean/std so experiment claims can be traced to one reproducible evaluation artifact.
+
+### LoRA Rank Sweep (Research-Depth Ablation)
+
+Use `experiments/lora_rank_sweep.py` to run a reproducible rank ablation (for example `r=1,2,4,8,16`) and generate both machine-readable and CV-ready reports.
+
+```bash
+python experiments/lora_rank_sweep.py \
+  --checkpoint results/colab-checkpoints/exp1_step5000.pt \
+  --val_bin data/val.bin \
+  --batch_size 32 \
+  --eval_batches 50 \
+  --seeds 42 123 999 \
+  --adapter 1:results/lora/lora_rank1.pt \
+  --adapter 2:results/lora/lora_rank2.pt \
+  --adapter 4:results/lora/lora_poetry_rank4.pt \
+  --adapter 8:results/lora/lora_rank8.pt \
+  --adapter 16:results/lora/lora_rank16.pt \
+  --output_json results/eval/lora_rank_sweep.json \
+  --output_md results/eval/lora_rank_sweep.md
+```
+
+The output includes:
+- per-rank mean/std perplexity on held-out validation
+- trainable parameter count and percentage
+- delta versus best rank
+- one decision sentence per rank (to convert results into engineering decisions, not just numbers)
+
+### Fail-Fast API Startup (Production)
+
+Enable strict startup to prevent silent stub mode in production:
+
+```bash
+STRICT_STARTUP=1 uvicorn api.app:app --host 0.0.0.0 --port 8000
+```
+
+With `STRICT_STARTUP=1`, startup fails immediately if the model checkpoint or tokenizer cannot be loaded.
 
 ---
 

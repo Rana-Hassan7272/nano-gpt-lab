@@ -277,7 +277,7 @@ Same pattern as LLM Inference:
 docker-compose up
 Starts API, dashboard, MLflow. Everything in one command.
 Step 2 — Deploy
-Deploy inference API to Railway or Hugging Face Spaces. Use your smallest checkpoint — 1.2M model runs on CPU inference fine.
+Deploy inference API to Railway or Hugging Face Spaces and frotnend means dashboard to vercel etc . Use your smallest checkpoint — 1.2M model runs on CPU inference fine.
 Step 3 — Write technical blog post
 Write one Medium article titled something like:
 "What I learned building a GPT from scratch on a free GPU"
