@@ -700,6 +700,12 @@ python experiments/lora_rank_sweep.py \
   --output_md results/eval/lora_rank_sweep.md
 ```
 
+If you are running LoRA-only workflows and your runtime does not have `data/val.bin`, use:
+
+```bash
+--val_bin data/fine_tune_val.bin
+```
+
 The output includes:
 - per-rank mean/std perplexity on held-out validation
 - trainable parameter count and percentage

@@ -148,6 +148,25 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def resolve_val_bin_path(val_bin_arg: str) -> Path:
+    candidate = Path(val_bin_arg)
+    if candidate.exists():
+        return candidate
+
+    fallback = Path("data/fine_tune_val.bin")
+    if fallback.exists():
+        print(
+            f"[warn] Validation binary '{candidate}' not found. "
+            f"Falling back to '{fallback}'."
+        )
+        return fallback
+
+    raise FileNotFoundError(
+        f"Validation binary not found: {candidate}. "
+        "Also checked fallback: data/fine_tune_val.bin"
+    )
+
+
 def main() -> None:
     args = parse_args()
 
@@ -155,9 +174,7 @@ def main() -> None:
     if not checkpoint_path.exists():
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
 
-    val_bin = Path(args.val_bin)
-    if not val_bin.exists():
-        raise FileNotFoundError(f"Validation binary not found: {val_bin}")
+    val_bin = resolve_val_bin_path(args.val_bin)
 
     adapter_path = Path(args.adapter_path) if args.adapter_path else None
     if args.compare_lora and adapter_path is None:

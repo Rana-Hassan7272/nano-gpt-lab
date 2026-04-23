@@ -82,6 +82,25 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def resolve_val_bin_path(val_bin_arg: str) -> Path:
+    candidate = Path(val_bin_arg)
+    if candidate.exists():
+        return candidate
+
+    fallback = Path("data/fine_tune_val.bin")
+    if fallback.exists():
+        print(
+            f"[warn] Validation binary '{candidate}' not found. "
+            f"Falling back to '{fallback}'."
+        )
+        return fallback
+
+    raise FileNotFoundError(
+        f"Validation binary not found: {candidate}. "
+        "Also checked fallback: data/fine_tune_val.bin"
+    )
+
+
 def main() -> None:
     args = parse_args()
     checkpoint = Path(args.checkpoint)
@@ -103,7 +122,8 @@ def main() -> None:
         bias=args.bias,
     )
     context_len = int(args.context_len) if args.context_len is not None else int(probe_model.config.context_len)
-    dataset = TokenChunkDataset(bin_path=Path(args.val_bin), context_len=context_len)
+    val_bin = resolve_val_bin_path(args.val_bin)
+    dataset = TokenChunkDataset(bin_path=val_bin, context_len=context_len)
 
     baseline_eval = run_multi_seed_eval(
         model=probe_model,
@@ -165,7 +185,7 @@ def main() -> None:
     payload: Dict[str, Any] = {
         "setup": {
             "checkpoint": str(checkpoint),
-            "val_bin": str(args.val_bin),
+            "val_bin": str(val_bin),
             "context_len": context_len,
             "batch_size": args.batch_size,
             "eval_batches": args.eval_batches,
