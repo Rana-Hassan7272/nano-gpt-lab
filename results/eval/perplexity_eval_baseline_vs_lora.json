@@ -1,0 +1,69 @@
+{
+  "setup": {
+    "checkpoint": "results\\colab-checkpoints\\exp1_step5000.pt",
+    "val_bin": "data\\val.bin",
+    "context_len": 256,
+    "batch_size": 32,
+    "eval_batches": 50,
+    "seeds": [
+      42,
+      123,
+      999
+    ],
+    "device": "cpu"
+  },
+  "baseline": {
+    "per_seed": [
+      {
+        "seed": 42.0,
+        "val_loss": 6.894200305938721,
+        "perplexity": 986.5364819141795
+      },
+      {
+        "seed": 123.0,
+        "val_loss": 6.904058380126953,
+        "perplexity": 996.3099262622087
+      },
+      {
+        "seed": 999.0,
+        "val_loss": 6.895698804855346,
+        "perplexity": 988.0159139503522
+      }
+    ],
+    "aggregate": {
+      "mean_val_loss": 6.8979858303070065,
+      "std_val_loss": 0.00433730106076567,
+      "mean_perplexity": 990.2874407089134,
+      "std_perplexity": 4.301157128583801
+    }
+  },
+  "lora": {
+    "per_seed": [
+      {
+        "seed": 42.0,
+        "val_loss": 6.868612394332886,
+        "perplexity": 961.6132995507181
+      },
+      {
+        "seed": 123.0,
+        "val_loss": 6.8685892391204835,
+        "perplexity": 961.591033448307
+      },
+      {
+        "seed": 999.0,
+        "val_loss": 6.871547718048095,
+        "perplexity": 964.4400926204511
+      }
+    ],
+    "aggregate": {
+      "mean_val_loss": 6.869583117167155,
+      "std_val_loss": 0.0013892147678956446,
+      "mean_perplexity": 962.5481418731588,
+      "std_perplexity": 1.3378420852163802
+    }
+  },
+  "delta": {
+    "val_loss_mean_delta": -0.028402713139851876,
+    "perplexity_mean_delta": -27.739298835754653
+  }
+}

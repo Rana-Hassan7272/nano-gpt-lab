@@ -1,0 +1,66 @@
+{
+  "setup": {
+    "checkpoint": "results\\colab-checkpoints\\exp1_step5000.pt",
+    "val_bin": "data/val.bin",
+    "context_len": 256,
+    "batch_size": 32,
+    "eval_batches": 50,
+    "seeds": [
+      42,
+      123,
+      999
+    ],
+    "device": "cpu",
+    "alpha": 4.0,
+    "target_modules": [
+      "W_q",
+      "W_k",
+      "W_v",
+      "W_o"
+    ],
+    "bias": "none"
+  },
+  "baseline": {
+    "mean_val_loss": 6.8979858303070065,
+    "std_val_loss": 0.00433730106076567,
+    "mean_perplexity": 990.2874407089134,
+    "std_perplexity": 4.301157128583801
+  },
+  "best_rank": {
+    "rank": 4,
+    "mean_perplexity": 962.5481418731588,
+    "trainable_pct": 0.8962957776066102
+  },
+  "ranks": [
+    {
+      "rank": 4,
+      "adapter_path": "results\\lora\\lora_poetry_rank4.pt",
+      "mean_val_loss": 6.869583117167155,
+      "std_val_loss": 0.0013892147678956446,
+      "mean_perplexity": 962.5481418731588,
+      "std_perplexity": 1.3378420852163802,
+      "trainable_params": 16384,
+      "total_params": 1827968,
+      "trainable_pct": 0.8962957776066102,
+      "per_seed": [
+        {
+          "seed": 42.0,
+          "val_loss": 6.868612394332886,
+          "perplexity": 961.6132995507181
+        },
+        {
+          "seed": 123.0,
+          "val_loss": 6.8685892391204835,
+          "perplexity": 961.591033448307
+        },
+        {
+          "seed": 999.0,
+          "val_loss": 6.871547718048095,
+          "perplexity": 964.4400926204511
+        }
+      ],
+      "delta_vs_best_ppl": 0.0,
+      "decision": "Rank 4 is near-best (within 1% of best perplexity) with 0.896% trainable parameters, so it is a strong efficiency candidate."
+    }
+  ]
+}

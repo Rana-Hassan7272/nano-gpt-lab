@@ -28,8 +28,8 @@ Thumbs.db
 
 # Data artifacts (keep scripts, ignore generated binaries and local raw files)
 data/*.bin
-data/input.txt
-data/poetry.txt
+!data/input.txt
+!data/poetry.txt
 # Allow tokenizer (important)
 !data/tokenizer.json
 
