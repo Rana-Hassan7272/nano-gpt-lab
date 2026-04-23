@@ -12,7 +12,7 @@ env/
 
 mlruns/
 
-
+!results/colab-checkpoints/exp1_step5000.pt
 
 
 # OS/editor files
