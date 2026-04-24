@@ -626,10 +626,49 @@ def _build_normalized_experiment_payload(results_dir: Path) -> Dict[str, Any]:
         }
     )
 
+    eval_payload = None
+    eval_path = results_dir / "eval" / "perplexity_eval_baseline_vs_lora.json"
+    if eval_path.exists():
+        try:
+            loaded = json.loads(eval_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                eval_payload = loaded
+        except Exception:
+            eval_payload = None
+
+    rank_sweep_payload = None
+    rank_sweep_path = results_dir / "eval" / "lora_rank_sweep.json"
+    if rank_sweep_path.exists():
+        try:
+            loaded = json.loads(rank_sweep_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                rank_sweep_payload = loaded
+        except Exception:
+            rank_sweep_payload = None
+
+    prompt_benchmarks: Dict[str, Any] = {}
+    prompt_benchmark_files = {
+        "rank4_default": results_dir / "eval" / "prompt_benchmark_summary.json",
+        "rank8_t06_k20": results_dir / "eval" / "prompt_benchmark_summary_rank8_t06_k20.json",
+        "rank16_t06_k20": results_dir / "eval" / "prompt_benchmark_summary_rank16_t06_k20.json",
+    }
+    for key, path in prompt_benchmark_files.items():
+        if not path.exists():
+            continue
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                prompt_benchmarks[key] = loaded
+        except Exception:
+            continue
+
     return {
         "experiments": experiments,
         "lora": lora,
         "summary_table": summary_table,
+        "evaluation": eval_payload,
+        "lora_rank_sweep": rank_sweep_payload,
+        "prompt_benchmarks": prompt_benchmarks,
     }
 
 

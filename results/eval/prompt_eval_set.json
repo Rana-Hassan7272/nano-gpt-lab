@@ -1,0 +1,213 @@
+{
+    "metadata": {
+      "name": "poetry_style_pairwise_eval_v1",
+      "description": "Prompt set for baseline vs LoRA pairwise evaluation",
+      "domain": "poetry",
+      "target_language": "english",
+      "created_by": "PMY",
+      "version": "1.1"
+    },
+    "generation_config": {
+      "max_new": 80,
+      "temperature": 0.8,
+      "top_k": 40,
+      "strategy": "top_k",
+      "seed": 42
+    },
+    "rubric": {
+      "scale": "1-5 (higher is better)",
+      "dimensions": [
+        "style_adherence",
+        "coherence",
+        "relevance",
+        "fluency"
+      ]
+    },
+    "prompts": [
+      // ---------- 10 Direct Poetic Openers ----------
+      {
+        "id": "p001",
+        "prompt": "O moon, teach me how to grieve with grace.",
+        "intent": "lyrical sadness",
+        "tags": ["imagery", "emotion", "night"]
+      },
+      {
+        "id": "p002",
+        "prompt": "O wind, carry my forgotten name across the hills.",
+        "intent": "longing",
+        "tags": ["nature", "identity"]
+      },
+      {
+        "id": "p003",
+        "prompt": "When silence falls heavier than words.",
+        "intent": "reflection",
+        "tags": ["emotion", "minimalism"]
+      },
+      {
+        "id": "p004",
+        "prompt": "O river, tell me where lost time flows.",
+        "intent": "philosophical",
+        "tags": ["time", "nature"]
+      },
+      {
+        "id": "p005",
+        "prompt": "When the stars refuse to answer.",
+        "intent": "existential",
+        "tags": ["night", "questioning"]
+      },
+      {
+        "id": "p006",
+        "prompt": "O heart, why do you echo empty rooms?",
+        "intent": "loneliness",
+        "tags": ["emotion", "metaphor"]
+      },
+      {
+        "id": "p007",
+        "prompt": "When shadows stretch beyond their meaning.",
+        "intent": "mystery",
+        "tags": ["abstract", "dark"]
+      },
+      {
+        "id": "p008",
+        "prompt": "O sky, hold the weight of my unspoken dreams.",
+        "intent": "hopeful longing",
+        "tags": ["dreams", "vastness"]
+      },
+      {
+        "id": "p009",
+        "prompt": "When dawn hesitates at the edge of night.",
+        "intent": "transition",
+        "tags": ["morning", "contrast"]
+      },
+      {
+        "id": "p010",
+        "prompt": "O memory, fade gently like autumn light.",
+        "intent": "nostalgia",
+        "tags": ["memory", "season"]
+      },
+  
+      // ---------- 10 Descriptive Scene Prompts ----------
+      {
+        "id": "p011",
+        "prompt": "Describe a quiet street just after rainfall.",
+        "intent": "urban imagery",
+        "tags": ["rain", "city"]
+      },
+      {
+        "id": "p012",
+        "prompt": "Write about a forest at the peak of autumn.",
+        "intent": "nature scene",
+        "tags": ["season", "color"]
+      },
+      {
+        "id": "p013",
+        "prompt": "Capture the feeling of a storm approaching over the sea.",
+        "intent": "dramatic imagery",
+        "tags": ["storm", "ocean"]
+      },
+      {
+        "id": "p014",
+        "prompt": "Describe a candle flickering in a dark room.",
+        "intent": "intimate scene",
+        "tags": ["light", "darkness"]
+      },
+      {
+        "id": "p015",
+        "prompt": "Write about a snowy village at night.",
+        "intent": "winter imagery",
+        "tags": ["snow", "quiet"]
+      },
+      {
+        "id": "p016",
+        "prompt": "Describe a river flowing through an ancient valley.",
+        "intent": "timeless nature",
+        "tags": ["river", "history"]
+      },
+      {
+        "id": "p017",
+        "prompt": "Write about a city waking before dawn.",
+        "intent": "urban morning",
+        "tags": ["dawn", "city"]
+      },
+      {
+        "id": "p018",
+        "prompt": "Describe the sound of wind through abandoned buildings.",
+        "intent": "haunting imagery",
+        "tags": ["wind", "ruins"]
+      },
+      {
+        "id": "p019",
+        "prompt": "Write about waves crashing against a lonely shore.",
+        "intent": "solitude",
+        "tags": ["ocean", "emotion"]
+      },
+      {
+        "id": "p020",
+        "prompt": "Describe a marketplace just before closing time.",
+        "intent": "everyday scene",
+        "tags": ["people", "evening"]
+      },
+  
+      // ---------- 10 Constrained Prompts ----------
+      {
+        "id": "p021",
+        "prompt": "Write exactly 4 lines about hope in darkness.",
+        "intent": "structured hope",
+        "tags": ["constraint", "emotion"]
+      },
+      {
+        "id": "p022",
+        "prompt": "Write a poem that must include the words 'mirror' and 'truth'.",
+        "intent": "symbolism",
+        "tags": ["constraint", "abstract"]
+      },
+      {
+        "id": "p023",
+        "prompt": "Write 5 lines ending with a sense of peace.",
+        "intent": "resolution",
+        "tags": ["constraint", "ending"]
+      },
+      {
+        "id": "p024",
+        "prompt": "Write a poem mentioning both fire and water as opposing forces.",
+        "intent": "contrast",
+        "tags": ["elements", "constraint"]
+      },
+      {
+        "id": "p025",
+        "prompt": "Write a 4-line poem where each line starts with 'I remember'.",
+        "intent": "memory",
+        "tags": ["structure", "repetition"]
+      },
+      {
+        "id": "p026",
+        "prompt": "Write a poem that begins with loss and ends with hope.",
+        "intent": "emotional arc",
+        "tags": ["transition", "constraint"]
+      },
+      {
+        "id": "p027",
+        "prompt": "Write 3 lines that include a question in the final line.",
+        "intent": "reflection",
+        "tags": ["question", "constraint"]
+      },
+      {
+        "id": "p028",
+        "prompt": "Write a poem that must mention time and silence.",
+        "intent": "abstract themes",
+        "tags": ["constraint", "philosophy"]
+      },
+      {
+        "id": "p029",
+        "prompt": "Write 4 lines where the last word of each line rhymes.",
+        "intent": "rhyming structure",
+        "tags": ["constraint", "form"]
+      },
+      {
+        "id": "p030",
+        "prompt": "Write a poem in 5 lines that ends with a surprising twist.",
+        "intent": "creative ending",
+        "tags": ["twist", "constraint"]
+      }
+    ]
+  }

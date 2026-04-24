@@ -1,0 +1,584 @@
+{
+  "metadata": {
+    "instructions": "Fill winner and 1-5 scores for each dimension. Keep A/B labels blinded.",
+    "scale": "1-5",
+    "dimensions": [
+      "style_adherence",
+      "coherence",
+      "relevance",
+      "fluency"
+    ]
+  },
+  "ratings": [
+    {
+      "id": "p001",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p002",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p003",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p004",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p005",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p006",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p007",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p008",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p009",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p010",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p011",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p012",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p013",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p014",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p015",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p016",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p017",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p018",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p019",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p020",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p021",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p022",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p023",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p024",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p025",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p026",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p027",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p028",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p029",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "p030",
+      "winner": null,
+      "scores": {
+        "A": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        },
+        "B": {
+          "style_adherence": null,
+          "coherence": null,
+          "relevance": null,
+          "fluency": null
+        }
+      },
+      "notes": ""
+    }
+  ]
+}

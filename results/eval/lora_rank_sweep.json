@@ -1,7 +1,7 @@
 {
   "setup": {
     "checkpoint": "results\\colab-checkpoints\\exp1_step5000.pt",
-    "val_bin": "data/val.bin",
+    "val_bin": "data\\val.bin",
     "context_len": 256,
     "batch_size": 32,
     "eval_batches": 50,
@@ -27,11 +27,71 @@
     "std_perplexity": 4.301157128583801
   },
   "best_rank": {
-    "rank": 4,
-    "mean_perplexity": 962.5481418731588,
-    "trainable_pct": 0.8962957776066102
+    "rank": 16,
+    "mean_perplexity": 923.0596814951325,
+    "trainable_pct": 3.491305830207978
   },
   "ranks": [
+    {
+      "rank": 1,
+      "adapter_path": "results\\lora\\lora_rank1.pt",
+      "mean_val_loss": 11.52310651143392,
+      "std_val_loss": 0.00777417194317095,
+      "mean_perplexity": 101026.36042398404,
+      "std_perplexity": 786.399832455431,
+      "trainable_params": 4096,
+      "total_params": 1815680,
+      "trainable_pct": 0.22559041240747268,
+      "per_seed": [
+        {
+          "seed": 42.0,
+          "val_loss": 11.514602298736571,
+          "perplexity": 100167.82404382247
+        },
+        {
+          "seed": 123.0,
+          "val_loss": 11.521324100494384,
+          "perplexity": 100843.4003007019
+        },
+        {
+          "seed": 999.0,
+          "val_loss": 11.533393135070801,
+          "perplexity": 102067.85692742774
+        }
+      ],
+      "delta_vs_best_ppl": 100103.30074248891,
+      "decision": "Rank 1 underperforms the best rank by 10844.73% perplexity; only keep it if parameter budget is stricter than quality target."
+    },
+    {
+      "rank": 2,
+      "adapter_path": "results\\lora\\lora_rank2.pt",
+      "mean_val_loss": 8.438486054738362,
+      "std_val_loss": 0.0013911069230309958,
+      "mean_perplexity": 4621.5573789528335,
+      "std_perplexity": 6.42864055649637,
+      "trainable_params": 8192,
+      "total_params": 1819776,
+      "trainable_pct": 0.45016529506928327,
+      "per_seed": [
+        {
+          "seed": 42.0,
+          "val_loss": 8.438577060699464,
+          "perplexity": 4621.973515392547
+        },
+        {
+          "seed": 123.0,
+          "val_loss": 8.436738624572754,
+          "perplexity": 4613.484118303379
+        },
+        {
+          "seed": 999.0,
+          "val_loss": 8.440142478942871,
+          "perplexity": 4629.214503162574
+        }
+      ],
+      "delta_vs_best_ppl": 3698.497697457701,
+      "decision": "Rank 2 underperforms the best rank by 400.68% perplexity; only keep it if parameter budget is stricter than quality target."
+    },
     {
       "rank": 4,
       "adapter_path": "results\\lora\\lora_poetry_rank4.pt",
@@ -59,8 +119,68 @@
           "perplexity": 964.4400926204511
         }
       ],
+      "delta_vs_best_ppl": 39.488460378026275,
+      "decision": "Rank 4 underperforms the best rank by 4.28% perplexity; only keep it if parameter budget is stricter than quality target."
+    },
+    {
+      "rank": 8,
+      "adapter_path": "results\\lora\\lora_rank8.pt",
+      "mean_val_loss": 6.830507017771403,
+      "std_val_loss": 0.0020096012057696268,
+      "mean_perplexity": 925.6618882177274,
+      "std_perplexity": 1.859430607358427,
+      "trainable_params": 32768,
+      "total_params": 1844352,
+      "trainable_pct": 1.7766673606773544,
+      "per_seed": [
+        {
+          "seed": 42.0,
+          "val_loss": 6.827803506851196,
+          "perplexity": 923.1608673944835
+        },
+        {
+          "seed": 123.0,
+          "val_loss": 6.83261773109436,
+          "perplexity": 927.6158859473923
+        },
+        {
+          "seed": 999.0,
+          "val_loss": 6.831099815368653,
+          "perplexity": 926.2089113113066
+        }
+      ],
+      "delta_vs_best_ppl": 2.6022067225949286,
+      "decision": "Rank 8 is near-best (within 1% of best perplexity) with 1.777% trainable parameters, so it is a strong efficiency candidate."
+    },
+    {
+      "rank": 16,
+      "adapter_path": "results\\lora\\lora_rank16.pt",
+      "mean_val_loss": 6.8276900227864585,
+      "std_val_loss": 0.0027814454850935027,
+      "mean_perplexity": 923.0596814951325,
+      "std_perplexity": 2.5691798118483504,
+      "trainable_params": 65536,
+      "total_params": 1877120,
+      "trainable_pct": 3.491305830207978,
+      "per_seed": [
+        {
+          "seed": 42.0,
+          "val_loss": 6.8248874282836915,
+          "perplexity": 920.4727790180162
+        },
+        {
+          "seed": 123.0,
+          "val_loss": 6.831481666564941,
+          "perplexity": 926.5626528261159
+        },
+        {
+          "seed": 999.0,
+          "val_loss": 6.826700973510742,
+          "perplexity": 922.1436126412655
+        }
+      ],
       "delta_vs_best_ppl": 0.0,
-      "decision": "Rank 4 is near-best (within 1% of best perplexity) with 0.896% trainable parameters, so it is a strong efficiency candidate."
+      "decision": "Rank 16 is near-best (within 1% of best perplexity) with 3.491% trainable parameters, so it is a strong efficiency candidate."
     }
   ]
 }

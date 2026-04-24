@@ -1,0 +1,36 @@
+{
+    "ratings": [
+      {"id":"p001","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"B clearly structured dialogue, A noise"},
+      {"id":"p002","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A improved coherence"},
+      {"id":"p003","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A readable"},
+      {"id":"p004","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"B more poetic form"},
+      {"id":"p005","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"B repetitive corruption"},
+      {"id":"p006","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A strongest emotional structure so far"},
+      {"id":"p007","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"B structured"},
+      {"id":"p008","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A consistent Shakespeare tone"},
+      {"id":"p009","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"B nearly empty"},
+      {"id":"p010","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A improved fluency"},
+  
+      {"id":"p011","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"B more structured"},
+      {"id":"p012","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"A nearly empty"},
+      {"id":"p013","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"A more poetic"},
+      {"id":"p014","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"B broken"},
+      {"id":"p015","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Both unusable"},
+      {"id":"p016","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A readable"},
+      {"id":"p017","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"B structured dialogue"},
+      {"id":"p018","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A clearer imagery"},
+      {"id":"p019","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"B minimal"},
+      {"id":"p020","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"A more coherent"},
+  
+      {"id":"p021","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Constraint fail"},
+      {"id":"p022","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Missing keywords"},
+      {"id":"p023","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Fails 5 lines"},
+      {"id":"p024","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"No fire/water"},
+      {"id":"p025","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Structure fail"},
+      {"id":"p026","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"No arc"},
+      {"id":"p027","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"B closer to structure"},
+      {"id":"p028","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"B more meaningful"},
+      {"id":"p029","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"No rhyme"},
+      {"id":"p030","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A slightly structured"}
+    ]
+  }

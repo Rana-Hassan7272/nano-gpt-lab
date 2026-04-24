@@ -1,0 +1,29 @@
+{
+  "counts": {
+    "scored_prompts": 30,
+    "baseline_wins": 19,
+    "lora_wins": 3,
+    "ties": 8,
+    "lora_win_rate_on_decisive": 0.13636363636363635
+  },
+  "dimension_scores": {
+    "baseline": {
+      "style_adherence": 2.2,
+      "coherence": 2.2,
+      "relevance": 1.7333333333333334,
+      "fluency": 2.2
+    },
+    "lora": {
+      "style_adherence": 1.2666666666666666,
+      "coherence": 1.2666666666666666,
+      "relevance": 1.2,
+      "fluency": 1.2666666666666666
+    },
+    "delta_lora_minus_baseline": {
+      "style_adherence": -0.9333333333333336,
+      "coherence": -0.9333333333333336,
+      "relevance": -0.5333333333333334,
+      "fluency": -0.9333333333333336
+    }
+  }
+}

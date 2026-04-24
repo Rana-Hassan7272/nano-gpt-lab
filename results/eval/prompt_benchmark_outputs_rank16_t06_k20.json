@@ -1,0 +1,516 @@
+{
+  "metadata": {
+    "name": "poetry_style_pairwise_eval_v1",
+    "description": "Prompt set for baseline vs LoRA pairwise evaluation",
+    "domain": "poetry",
+    "target_language": "english",
+    "created_by": "PMY",
+    "version": "1.1"
+  },
+  "generation_config": {
+    "max_new": 80,
+    "temperature": 0.6,
+    "top_k": 20,
+    "seed_base": 42,
+    "strategy": "top_k",
+    "source": "cli_override"
+  },
+  "models": {
+    "baseline_checkpoint": "results\\colab-checkpoints\\exp1_step5000.pt",
+    "lora_adapter": "results\\lora\\lora_rank16.pt",
+    "rank": 16,
+    "alpha": 16.0,
+    "target_modules": [
+      "W_v",
+      "W_k",
+      "W_q",
+      "W_o"
+    ],
+    "bias": "none"
+  },
+  "outputs": [
+    {
+      "id": "p001",
+      "prompt": "O moon, teach me how to grieve with grace.",
+      "intent": "lyrical sadness",
+      "tags": [
+        "imagery",
+        "emotion",
+        "night"
+      ],
+      "seed": 42,
+      "variant_a": "\n\n\n\nSII.\n\nNLLLNLL.\n\nThe sun sound of Erhhhhhhhhhy.\n\nThe dew is more and deed,\nThe bills bills upon\nNature in the coit\n  Nated in a ty.\n\nThe block of delights drow,\n  A b",
+      "variant_b": "--'So'''Zounds, 'Why dost thou speak again?\nWhy then, my gracious lord?\n\nLord Northumberland, be content:\nTowards Coza! Edward is thy life:\nForce this noble lord, my life were it,\nAnd only most loving life, my lord, I'll look me too.\nIs this the heart is that blood to fear\nTo undismal pale as as in hope.\nA b"
+    },
+    {
+      "id": "p002",
+      "prompt": "O wind, carry my forgotten name across the hills.",
+      "intent": "longing",
+      "tags": [
+        "nature",
+        "identity"
+      ],
+      "seed": 43,
+      "variant_a": "--I have\nher to the Capitol: his own duke, that\nwill make them for him: his name\nthat his names were his own soldiers and yours,\nand plucked out of the people, to fear the moon\nwhich, was betravell'd than my poor dewes is\nin the other other gage: the piner of your\ninconstant of my sights: a doing",
+      "variant_b": " I looked too.\n\nWhat they do as it it going,\n   And that that bribed for fills,\n  A dire, 'lady:\n  That would beian the earth, --\n    The basbest hills,\n  Appicked stay, --\n   Applant sho;\n"
+    },
+    {
+      "id": "p003",
+      "prompt": "When silence falls heavier than words.",
+      "intent": "reflection",
+      "tags": [
+        "emotion",
+        "minimalism"
+      ],
+      "seed": 44,
+      "variant_a": "--I do this?\n\nServant:\nO, O, O, then so? thou hast seem'd her unseen.\nWho did not make hereafter!\nIt were not such a love of lawful king;\nHow curses now above the head's face,\nAnd leave the trunk-swallowing laws.\nBut now the blood of embouses in his eyes;\nShe comes forth to make his eyes did I\nAll in",
+      "variant_b": "' ' ' O OTBBLLLat.\n\n\n\n\n\nXVI.\n\nThe bounds more trow,\nIment bills dimed dime,\nSteping folding narry\n  As I lay but to set\n  That more more more forture to don\n  That frucks for a s"
+    },
+    {
+      "id": "p004",
+      "prompt": "O river, tell me where lost time flows.",
+      "intent": "philosophical",
+      "tags": [
+        "time",
+        "nature"
+      ],
+      "seed": 45,
+      "variant_a": "--'O, how we would do\nnot a pair of earth. Steptune, the common sade\nand bastards a shade them. Daries and fruck my sheets her fads\nthe dashes, wilding. 'What was this'no'''''''A fiber, ha'''----",
+      "variant_b": "\n\nII.\n\nAEE.\n\nA bounds more bounds drading sles\n  The sports of numuor's log,\n  A clinten fad.\n\nThe sun is like like of nals;\nFor the skies hirs spar\n  A falt her bides.\n\n\n\n\n\n"
+    },
+    {
+      "id": "p005",
+      "prompt": "When the stars refuse to answer.",
+      "intent": "existential",
+      "tags": [
+        "night",
+        "questioning"
+      ],
+      "seed": 46,
+      "variant_a": "----'\n\n\n\n\n\nPIIS.\n\nEARARBEE.\n\nThe druns she, they go.\n\nThe heed that dust would wed here:\nThe mment of A pubiment see\nThe dims hill.\n\n\n\n\n\nXVII.\n\nSN.\n\nEE.\n\nThe wet was spelled,\nAnd bult ",
+      "variant_b": "--''fore the dry,--'''Citizens!' 'banished'' ''''''' ''''''' '''''' '''' ''?\n'''nousus' ''''''' '''fore 'banished'''''' 'banished'''''' ' "
+    },
+    {
+      "id": "p006",
+      "prompt": "O heart, why do you echo empty rooms?",
+      "intent": "loneliness",
+      "tags": [
+        "emotion",
+        "metaphor"
+      ],
+      "seed": 47,
+      "variant_a": " do I with tears.\nI let this land as good and dita,\nO, then my soul's own may, the son's face?\nWhy what thou art? why canst thou speak?\nAh, tan! O God, thou art not a man!\nCome, go hence; I would be budat at once!\nWho did not be? why, 'tis thy father,\nThat Romeo that runken salse of hate",
+      "variant_b": " I we hear\nBut her scorned fare you well,\nThat dust is for mills\nA exiient is a last,\nThe wising sixstant hutle.\n\n\n\n\n\nXXII.\n\nHe wast, as bethinks 'r'd;\nWhat feats sheeps shood\nA dewing one huts,\nIn towns "
+    },
+    {
+      "id": "p007",
+      "prompt": "When shadows stretch beyond their meaning.",
+      "intent": "mystery",
+      "tags": [
+        "abstract",
+        "dark"
+      ],
+      "seed": 48,
+      "variant_a": "nodly sheaded sta's nrows srow, dimins frow'd in a mound,\nThe dust is a ununnumnn,\n   Most and a jads nim,\n                            ",
+      "variant_b": "--she has been books of facture,\nshe she she had one as many in followers too\npieve as one one would she lived them,\nAnd with a poor bributs of feeds are alone.\n\nPAULINA:\nSo please you, good sir.\n\nFLORIZEL:\nWhat is't he says\nHe will break the gods.\n\nMENENIUS:\nHow would he would do that it will make you\nA"
+    },
+    {
+      "id": "p008",
+      "prompt": "O sky, hold the weight of my unspoken dreams.",
+      "intent": "hopeful longing",
+      "tags": [
+        "dreams",
+        "vastness"
+      ],
+      "seed": 49,
+      "variant_a": "' love?\n\nMONTAGUE:\nBut the devil feelings is this?\nIs Romeo that I was not tod-ticked course,\nThat the infection of my father's sight; his heart;\nAnd this my my unnatural guides thee:\nOne that must be tasted in a troubling cheeks,\nWhich late press'd them in the world-swallow'd deed,\nThe sun sicker in their",
+      "variant_b": "' O SLLLLLE:\nPaters of Sossips,\nStopded meapers seized.\n\n\n\n\n\nXMII.\n\nAEPE.\n\nGEEPases a gracing upon,\nThey dashed as as a gird,\nThe peet of dry;\nA smmuln and w"
+    },
+    {
+      "id": "p009",
+      "prompt": "When dawn hesitates at the edge of night.",
+      "intent": "transition",
+      "tags": [
+        "morning",
+        "contrast"
+      ],
+      "seed": 50,
+      "variant_a": "--\nFor the dry! And she cannot tell her\nAnd see the people therein like it fondly dance;\nNor we will come on: on this unstead of war\nTo drow them back.\n\nMENENIUS:\nO, good sir!\nWe will make their cell, and hear the world,\nAnd wilts it out. All's stick-house,\nLet it not bed, as easily put ",
+      "variant_b": "\n\n\n\nVIII.\n\nEEE.\n\nThe dever is a barars dall\nNlated like to sain,\nNepimage of anygy.\n\n\n\n\n\nXVII.\n\nThe dops fruck'd out forn;\nHe had sheeped at for followers dimed\nBy babs d"
+    },
+    {
+      "id": "p010",
+      "prompt": "O memory, fade gently like autumn light.",
+      "intent": "nostalgia",
+      "tags": [
+        "memory",
+        "season"
+      ],
+      "seed": 51,
+      "variant_a": "--'A pace\nAnd the first, this wrinkled in such pastes\nThis day of unchest-wil'd feats,\nA clent eyibers, spark, had, wink'd drows,\nWith weathers of sint, the lents of nother\nAnd set our flesh and green thee and trimes,\nStill the ",
+      "variant_b": "\n\nPII.\n\nThe spurse is duns noted\n  The spurbudol Swilking.\n\nGainted as as shribs,\n  Salse it wed be,\nAs the pills would caffer it was\n  With polse the valled.\n\n\n\n\n\nXF.\n\nThe blocks "
+    },
+    {
+      "id": "p011",
+      "prompt": "Describe a quiet street just after rainfall.",
+      "intent": "urban imagery",
+      "tags": [
+        "rain",
+        "city"
+      ],
+      "seed": 52,
+      "variant_a": " who is shose\n                                                                          ",
+      "variant_b": "--\nAs she cannot tell them. By and droks\nSlabed with the other sines with bided;\nOne of Rome and one so benefit which\nHad he seems. For they will not. If you\nI stand pounds, these droops to know\nThe common scorn, to the seat, of it\nOf your dience. If you do do; follow him"
+    },
+    {
+      "id": "p012",
+      "prompt": "Write about a forest at the peak of autumn.",
+      "intent": "nature scene",
+      "tags": [
+        "season",
+        "color"
+      ],
+      "seed": 53,
+      "variant_a": "\n\nSII.\n\n\nNI.\n\nThe seat was a brother the dims to\nuse to to pend the rotest sese\nThe timted with the stars\nOf the cobed dalls hutle.\n\nA fills a grabs, which loved tods,\nDutument bills dims wwle;\n",
+      "variant_b": " that they say 'tis no other say;\nWe do that run the truth of sever,\nThat he may have muff'd their mages 'Why do you not,' but he be gone.\n\nLAND:\nBut then you would not meet forbid?\n\nFirst Murderer:\nBrage? why, 'tis the devil that go?\n\nHASTINGS:\nThe matter, sir; all are are well mutany.\n\nBUCKINGHAM:\nWhy, what news? "
+    },
+    {
+      "id": "p013",
+      "prompt": "Capture the feeling of a storm approaching over the sea.",
+      "intent": "dramatic imagery",
+      "tags": [
+        "storm",
+        "ocean"
+      ],
+      "seed": 54,
+      "variant_a": "                                                                                ",
+      "variant_b": "--\nAs we must fall in's trunk: upon her facts,\nWith brave death, these sorrows ere she\nWith one in justice of your highness' hands.\nIn all, I think, not make her father\nOf his head and disguess and love!\nO, my dear cousin, I am a father,\nOr home to myself as my father's hand\nAnd yet to bear my father's life;\n"
+    },
+    {
+      "id": "p014",
+      "prompt": "Describe a candle flickering in a dark room.",
+      "intent": "intimate scene",
+      "tags": [
+        "light",
+        "darkness"
+      ],
+      "seed": 55,
+      "variant_a": "--I'll follow you;\nThis day I may; but they shall sadly it\nThat could keep my souls grows more injury,\nIf that I knew me so, as I hear our head\nIn a thousand of a arms that are gone.\n\nLEONTES:\nMake haste, by ace. By my sovereign's life!\nBut that be so dearly as thou speak'st it,\nEre thou speak'st 'st me not; ",
+      "variant_b": "                                                                                "
+    },
+    {
+      "id": "p015",
+      "prompt": "Write about a snowy village at night.",
+      "intent": "winter imagery",
+      "tags": [
+        "snow",
+        "quiet"
+      ],
+      "seed": 56,
+      "variant_a": "' Teach the hills stretcheds dust was an heir;\nWe srred drows 'rhyy.'\n\n\n\n\n\nXII.\n\nSII.\n\nEE.\n\nThe bricks in his drows dall\nNears more bewing.\n\nBut the wildness was a prophy\n  The slows ",
+      "variant_b": "--''Bo''''''''''''''' '''--'''''''' ''''''''''''''--''''''''Anono''''''''' ''''''' ''''''"
+    },
+    {
+      "id": "p016",
+      "prompt": "Describe a river flowing through an ancient valley.",
+      "intent": "timeless nature",
+      "tags": [
+        "river",
+        "history"
+      ],
+      "seed": 57,
+      "variant_a": "--\nWhich the seat of his body, the blood of a brow,\nThey will shed out a sued-stick-up,\nNephits of the cook that makes me drow-tre's black;\nThy pages of thine eye, beside\nThy open rapier's eye, his shades with haughty gifts,\nWithin the sun's v",
+      "variant_b": " brow                                                                              "
+    },
+    {
+      "id": "p017",
+      "prompt": "Write about a city waking before dawn.",
+      "intent": "urban morning",
+      "tags": [
+        "dawn",
+        "city"
+      ],
+      "seed": 58,
+      "variant_a": "' \n\nPPPPII.\n\nA roverse of an ass\nOf the plock-hills dyssssese\n  By exercult to see\n    To cook the hy.\n\nMy eyes and habt as fard,\n                ",
+      "variant_b": "--\nFor the verest cause, the prince he comes.\n\nMENENIUS:\nNo, sir:\nWhy will you mercule them so?--\nFor what we speak, and give 't.\n\nMENENIUS:\nCome, fellow, and pray you.\n\nSICINIUS:\nYou're as good good for what you?\n\nFirst Citizen:\nHe has been so stretched at us, he is\nconceiving at their proves, es, he has as a\ngreat incity, he knew no "
+    },
+    {
+      "id": "p018",
+      "prompt": "Describe the sound of wind through abandoned buildings.",
+      "intent": "haunting imagery",
+      "tags": [
+        "wind",
+        "ruins"
+      ],
+      "seed": 59,
+      "variant_a": "--the blood is now;\nThis would dost for she would do pickle her:\nI the many can you out-swoon-hood:\nOne of my frank-tacks in his face,\nAnd all things pullen now prosperous crows,\nPembleed their clined crook-spilling tears,\nHis pothecaries and ",
+      "variant_b": "' Spicked in the fickle her;\nPurver, like her barar's night's narars\nA reserves dever doning gall;\n  The drys worned at gids\n  That diment her brows dust and cunks.\n\n\n\n\n\nXVII.\n\nEE.\n\n"
+    },
+    {
+      "id": "p019",
+      "prompt": "Write about waves crashing against a lonely shore.",
+      "intent": "solitude",
+      "tags": [
+        "ocean",
+        "emotion"
+      ],
+      "seed": 60,
+      "variant_a": "--\nFor the heart that they should they say--'''banished'--'?\nHi' 'banished'' 'banished,'--'''' ''?----''banished'?\n''fore God! what, lady' lady,'\nAnd bear hereafter; '''banished'! '''' ' 'banished'' '''.'\n\nJULIET:\n'banished",
+      "variant_b": " whue, the pee's dewest hills\n  The sun nars hill\n                                                        "
+    },
+    {
+      "id": "p020",
+      "prompt": "Describe a marketplace just before closing time.",
+      "intent": "everyday scene",
+      "tags": [
+        "people",
+        "evening"
+      ],
+      "seed": 61,
+      "variant_a": "--\nBe not for this? I like not her beauty served\nWith a poor man of my fortune, as lie\nHambitious piege and example\nhis unhappily profaned from them that set\nOf that the refuse: but the dissembly:\nThe grand piled of law and wreckless fold,\nAnd all exile with an ear with",
+      "variant_b": "\n\n\n\n\n\nVII.\n\nThe sprose that wed\nIs the rebent bolve the sun,\n'Tis sparent in a gate,\nThe seat was be.\nHis sceptanced, as budy,\nThe bands dops funs;\nFor sickles like a fews sunsithence,\nThat more shut meaby"
+    },
+    {
+      "id": "p021",
+      "prompt": "Write exactly 4 lines about hope in darkness.",
+      "intent": "structured hope",
+      "tags": [
+        "constraint",
+        "emotion"
+      ],
+      "seed": 62,
+      "variant_a": " whither they going setture deet were the timing eyes calams hollior and ceader\n                                                  ",
+      "variant_b": "--'Lord,'\n'God save King Richard! Come, sir, she call them;\nIt iss.\n\nGREGORY:\nBut when my good old man then then condition\nhim with some other speech.\n\nCOMINIUS:\nNay, let me speak the words.\n\nThird Citizen:\nThe very very word shall swear't: who is said\nThe noble duke? 'tis no doubt, for me\nThe droded dumb. Good my lord,\nAntigon"
+    },
+    {
+      "id": "p022",
+      "prompt": "Write a poem that must include the words 'mirror' and 'truth'.",
+      "intent": "symbolism",
+      "tags": [
+        "constraint",
+        "abstract"
+      ],
+      "seed": 63,
+      "variant_a": "--God I look by this land will live\nHang the heavy bagion? O heaven thou'eny\nMakes the warn often: his own bedness straws,\nMeady to great unning lized stamps,\nNor draw nor stuck'd their protusions,\nMy careless life and festions now agreed",
+      "variant_b": "\n\n\n\nIIII.\n\nTORE.\n\nAA casticated to deved\nBy deems her eyes to rhe;\nOne exile and soughtless dies,\nStirs dorned and stample,\nOne eyes may wake them, --\n  He slands frut.\n\n\n\n\n\nXVII.\n\nP.\n\n"
+    },
+    {
+      "id": "p023",
+      "prompt": "Write 5 lines ending with a sense of peace.",
+      "intent": "resolution",
+      "tags": [
+        "constraint",
+        "ending"
+      ],
+      "seed": 64,
+      "variant_a": "--''banished''''',''' 'banished','--'' 'banished'?\nWhy, what says ''''' 's!' ''''''banished''''''?\nHow'''banished,'' ''''''''''God save us.' '''''' ''?\n''God save ",
+      "variant_b": "\n\n\n\nVIII.\n\nA pase and dim, --\n                                                                "
+    },
+    {
+      "id": "p024",
+      "prompt": "Write a poem mentioning both fire and water as opposing forces.",
+      "intent": "contrast",
+      "tags": [
+        "elements",
+        "constraint"
+      ],
+      "seed": 65,
+      "variant_a": "--'God save thee!\nWho can do me no other fifteen us?\nThis day may bed, and I never have it so,\nAnd all the rest is safe than your be,\nWho knows not so, then to death o'erward;\nLudge and dust and pickle babes\nAnd see my devotion distle my cheeks and springs\nOf that his blood did fancy her ",
+      "variant_b": "\n\nNII.\n\nThe vorors we, --\n  A bawd of nary.\n\nThe vap of old frows fances\n  For braw seats shore his shoss.\n\n\n\n\n\nVIIII.\n\nEOROREEEER.\n\n\n\n\n\nVII.\n\nHORLLLL"
+    },
+    {
+      "id": "p025",
+      "prompt": "Write a 4-line poem where each line starts with 'I remember'.",
+      "intent": "memory",
+      "tags": [
+        "structure",
+        "repetition"
+      ],
+      "seed": 66,
+      "variant_a": "--''fore my holy good lady'?\nShell is a noble things: 's.\nBut very very very word 'banished'?\n\nVIRGILIA:\nThe senator's lady''' ''banished'?\nFortune me 'Ano'? why, 'tis a villain'--\n'fore my my my Romeo'' lady's,\nStay but 'Zound? O God! O God",
+      "variant_b": " who  I folded her for smer fad,\n                                                                   "
+    },
+    {
+      "id": "p026",
+      "prompt": "Write a poem that begins with loss and ends with hope.",
+      "intent": "emotional arc",
+      "tags": [
+        "transition",
+        "constraint"
+      ],
+      "seed": 67,
+      "variant_a": "--'ZWATER:\nMy lord, the devil's head?\n\nEDWARD:\nSee, my lords, let's meet to take our lands:\nWhat is the king of king?\n\nSTANLEY:\nNo, my lord, that Henry is dead?\nCome, madam, 'tis the Duke of Gloucester's death?\nWhere is the day of king? is it that complaints;\nAnd, since the rests are in our love.\n\nBENVOLIO:\nMy liege, the unnatural royal hands,\nYet never yet they ",
+      "variant_b": " what excance. \n                                                                          "
+    },
+    {
+      "id": "p027",
+      "prompt": "Write 3 lines that include a question in the final line.",
+      "intent": "reflection",
+      "tags": [
+        "question",
+        "constraint"
+      ],
+      "seed": 68,
+      "variant_a": " brrlout, and some mills srows, --------------                                                            ",
+      "variant_b": "--'s!\nHectors no med? Here is not she\nBesides, he be consul, come hither; at once then\nStills this? O heigh! the duke\nCoriolanus Lartius, that will not be the people?\n\nAUFIDIUS:\nThrong that hath a prod,\nAnd make him had been used to us.\n\nAEdile:\nWhy, sir.\n\nCORIOLANUS:\nThe consul? O God! Bless friendship"
+    },
+    {
+      "id": "p028",
+      "prompt": "Write a poem that must mention time and silence.",
+      "intent": "abstract themes",
+      "tags": [
+        "constraint",
+        "philosophy"
+      ],
+      "seed": 69,
+      "variant_a": "\n\n\n\n\n\nIII.\n\nEORORNII.\n\nWhat can you know thy heart,\nLet her bodd the narrows\nNinted to set\n  Soying like for sup,\nAnd wine in hard's stage,\n  That bounds not strise.\n\n\n\n\n\nX OF .\n\nPARNEE.\n\nThe ",
+      "variant_b": "--\nFortune, this budat that in those barks,\nYou brave the hell is this. Alack night,\nThat I have said the siny me! I have should\nCutiny strength and not milding, and in\nAnd not with words, sports, bounds now!\nDights what infection was an narquabed,\nThis night nor w"
+    },
+    {
+      "id": "p029",
+      "prompt": "Write 4 lines where the last word of each line rhymes.",
+      "intent": "rhyming structure",
+      "tags": [
+        "constraint",
+        "form"
+      ],
+      "seed": 70,
+      "variant_a": "                                                                                ",
+      "variant_b": "--'banished'' ''Lord''''' '--'' ''banished'?\nSills, and my woe!'' lady,'''''''''''''' '?\nHuntsman! Brand,' and 's.\nBut speaks you our lord'banished'' ' '?\nFor this day next-boy?\n\nFirst Servant:\nTo "
+    },
+    {
+      "id": "p030",
+      "prompt": "Write a poem in 5 lines that ends with a surprising twist.",
+      "intent": "creative ending",
+      "tags": [
+        "twist",
+        "constraint"
+      ],
+      "seed": 71,
+      "variant_a": "--'s.\nWho is your stamps, ho! met 's.\nCome, sir, sir, I am a wife, go with him!\n\nNurse:\nSome a villain! a lady! Romeo, Romeo!\n\nNurse:\nO thou speak'st not such a Romeo?\n\nROMEO:\nAdopophysic, be? come, this.\n\nMERCUTIO:\nNay, let me go.\n\nNurse:\nSome to prison! Why, then is this!\n\nNurse:\nAlill.\n\nROMEO:\n",
+      "variant_b": "\n\n\n\nVIII.\n\nSEE.\n\nThe coples blits to stoot\n  The sun is like to stems\n                                               "
+    }
+  ],
+  "blind_mapping": {
+    "p001": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p002": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p003": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p004": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p005": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p006": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p007": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p008": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p009": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p010": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p011": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p012": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p013": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p014": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p015": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p016": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p017": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p018": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p019": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p020": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p021": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p022": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p023": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p024": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p025": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p026": {
+      "A": "baseline",
+      "B": "lora"
+    },
+    "p027": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p028": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p029": {
+      "A": "lora",
+      "B": "baseline"
+    },
+    "p030": {
+      "A": "baseline",
+      "B": "lora"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "metadata": {
+    "instructions": "Fill winner and 1-5 scores for each dimension. Keep A/B labels blinded.",
+    "scale": "1-5",
+    "dimensions": [
+      "style_adherence",
+      "coherence",
+      "relevance",
+      "fluency"
+    ]
+  },
+  "ratings": [
+    {"id":"p001","winner":"B","scores":{"A":{"style_adherence":2,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3}},"notes":"Baseline more readable"},
+    {"id":"p002","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":3,"coherence":2,"relevance":3,"fluency":2}},"notes":"LoRA slightly more poetic"},
+    {"id":"p003","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":1,"relevance":1,"fluency":1}},"notes":"Baseline coherent"},
+    {"id":"p004","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":2,"coherence":1,"relevance":1,"fluency":1}},"notes":"Both weak, A slightly better"},
+    {"id":"p005","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Both fail"},
+    {"id":"p006","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Baseline clearer"},
+    {"id":"p007","winner":"A","scores":{"A":{"style_adherence":3,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Slight edge A"},
+    {"id":"p008","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Baseline better flow"},
+    {"id":"p009","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Better readability"},
+    {"id":"p010","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Baseline stable"},
+
+    {"id":"p011","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"A nearly empty"},
+    {"id":"p012","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Tie-like but A slight"},
+    {"id":"p013","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"A empty"},
+    {"id":"p014","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"B empty"},
+    {"id":"p015","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"A less broken"},
+    {"id":"p016","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"B empty"},
+    {"id":"p017","winner":"A","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Slight A"},
+    {"id":"p018","winner":"B","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3}},"notes":"Tie but B imagery"},
+    {"id":"p019","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Both weak, B less repetitive"},
+    {"id":"p020","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Baseline clearer"},
+
+    {"id":"p021","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Constraint failed"},
+    {"id":"p022","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":2,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Baseline more structured"},
+    {"id":"p023","winner":"B","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"B slightly structured"},
+    {"id":"p024","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"B slight thematic"},
+    {"id":"p025","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Constraint fail"},
+    {"id":"p026","winner":"tie","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"Both poor"},
+    {"id":"p027","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Constraint fail"},
+    {"id":"p028","winner":"B","scores":{"A":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2},"B":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3}},"notes":"B better abstraction"},
+    {"id":"p029","winner":"tie","scores":{"A":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1},"B":{"style_adherence":1,"coherence":1,"relevance":1,"fluency":1}},"notes":"No rhyme"},
+    {"id":"p030","winner":"A","scores":{"A":{"style_adherence":3,"coherence":3,"relevance":3,"fluency":3},"B":{"style_adherence":2,"coherence":2,"relevance":2,"fluency":2}},"notes":"Baseline more structured"}
+  ]
+}
