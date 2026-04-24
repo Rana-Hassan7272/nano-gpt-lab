@@ -63,6 +63,43 @@ const LORA_DATA = {
   reduction_factor:111.57, adapter_kb:64.0, rank:4,
 };
 
+const EVAL_DATA = {
+  baseline: {
+    aggregate: { mean_perplexity: 990.2874, std_perplexity: 4.3012, mean_val_loss: 6.8980, std_val_loss: 0.0043 },
+    per_seed: [
+      { seed: 42, perplexity: 986.5365 },
+      { seed: 123, perplexity: 996.3099 },
+      { seed: 999, perplexity: 988.0159 },
+    ],
+  },
+  lora: {
+    aggregate: { mean_perplexity: 962.5481, std_perplexity: 1.3378, mean_val_loss: 6.8696, std_val_loss: 0.0014 },
+    per_seed: [
+      { seed: 42, perplexity: 961.6133 },
+      { seed: 123, perplexity: 961.5910 },
+      { seed: 999, perplexity: 964.4401 },
+    ],
+  },
+  delta: { perplexity_mean_delta: -27.7393, val_loss_mean_delta: -0.0284 },
+};
+
+const RANK_SWEEP_DATA = {
+  best_rank: { rank: 16, mean_perplexity: 923.0597, trainable_pct: 3.4913 },
+  ranks: [
+    { rank: 1, mean_perplexity: 101026.3604, std_perplexity: 786.3998, trainable_pct: 0.2256, decision: "Very poor quality despite high efficiency." },
+    { rank: 2, mean_perplexity: 4621.5574, std_perplexity: 6.4286, trainable_pct: 0.4502, decision: "Large quality drop; not practical." },
+    { rank: 4, mean_perplexity: 962.5481, std_perplexity: 1.3378, trainable_pct: 0.8963, decision: "Strong baseline efficiency point." },
+    { rank: 8, mean_perplexity: 925.6619, std_perplexity: 1.8594, trainable_pct: 1.7767, decision: "Near-best quality with better efficiency." },
+    { rank: 16, mean_perplexity: 923.0597, std_perplexity: 2.5692, trainable_pct: 3.4913, decision: "Best quality in sweep." },
+  ],
+};
+
+const PROMPT_BENCHMARK_DATA = {
+  rank4_default: { label: "Rank-4 default", counts: { baseline_wins: 21, lora_wins: 1, ties: 8, lora_win_rate_on_decisive: 0.0455 } },
+  rank8_t06_k20: { label: "Rank-8 t=0.6 k=20", counts: { baseline_wins: 19, lora_wins: 3, ties: 8, lora_win_rate_on_decisive: 0.1364 } },
+  rank16_t06_k20: { label: "Rank-16 t=0.6 k=20", counts: { baseline_wins: 15, lora_wins: 9, ties: 6, lora_win_rate_on_decisive: 0.3750 } },
+};
+
 function formatParams(n) {
   if (n >= 1e6) return `${(n / 1e6).toFixed(2)}M`;
   if (n >= 1e3) return `${(n / 1e3).toFixed(1)}K`;
@@ -75,6 +112,9 @@ function buildExperimentsView(payload) {
       experiments: EXPERIMENTS,
       lrCurves: LR_CURVES,
       lora: LORA_DATA,
+      evaluation: EVAL_DATA,
+      rankSweep: RANK_SWEEP_DATA,
+      promptBenchmarks: PROMPT_BENCHMARK_DATA,
       summaryRows: [
         {exp:"Baseline 0.79M", params:"0.79M", ppl:561.06,  time:"~3 min", finding:"Stable baseline at this scale"},
         {exp:"Larger 4.72M",   params:"4.72M", ppl:1624.76, time:"~6 min", finding:"Overfit under fixed budget"},
@@ -98,18 +138,30 @@ function buildExperimentsView(payload) {
       key_finding: e.key_finding || "-",
       curve: (e.loss_curve || []).map((p) => ({ step: p.step, train: p.train_loss, val: p.val_loss })),
     }));
-    const lrCurves = data.experiments.find((e) => e.id === "exp4_lr_sweep")?.lr_curves || LR_CURVES;
+    const rawLrCurves = data.experiments.find((e) => e.id === "exp4_lr_sweep")?.lr_curves || LR_CURVES;
+    const lrCurves = Object.fromEntries(
+      Object.entries(rawLrCurves).map(([lr, curve]) => [
+        lr,
+        (curve || []).map((p) => ({ step: p.step, val: p.val ?? p.val_loss })),
+      ])
+    );
     const lora = data.lora || LORA_DATA;
+    const evaluation = data.evaluation || EVAL_DATA;
+    const rankSweep = data.lora_rank_sweep || RANK_SWEEP_DATA;
+    const promptBenchmarks = data.prompt_benchmarks || PROMPT_BENCHMARK_DATA;
     const summaryRows = (data.summary_table || []).map((r) => ({
       exp: r.experiment, params: r.params, ppl: r.perplexity, time: r.train_time, finding: r.key_finding,
     }));
-    return { experiments, lrCurves, lora, summaryRows };
+    return { experiments, lrCurves, lora, evaluation, rankSweep, promptBenchmarks, summaryRows };
   }
 
   return {
     experiments: EXPERIMENTS,
     lrCurves: LR_CURVES,
     lora: LORA_DATA,
+    evaluation: EVAL_DATA,
+    rankSweep: RANK_SWEEP_DATA,
+    promptBenchmarks: PROMPT_BENCHMARK_DATA,
     summaryRows: [],
   };
 }
@@ -361,6 +413,9 @@ function ExperimentResults() {
   const experiments = viewData.experiments;
   const lrCurvesSource = viewData.lrCurves;
   const loraData = viewData.lora;
+  const evalData = viewData.evaluation || EVAL_DATA;
+  const rankSweep = viewData.rankSweep || RANK_SWEEP_DATA;
+  const promptBenchmarks = viewData.promptBenchmarks || PROMPT_BENCHMARK_DATA;
   const summaryRows = viewData.summaryRows.length
     ? viewData.summaryRows
     : [
@@ -370,6 +425,45 @@ function ExperimentResults() {
       {exp:"Best LR",        params:"0.79M", ppl:598.81,  time:"~3 min", finding:"3e-4 best among tested LRs"},
       {exp:"LoRA FT",       params:"16K",  ppl:219.7, time:"~5 min", finding:"0.9% params, domain shift"},
     ];
+
+  const baselineAgg = evalData?.baseline?.aggregate || EVAL_DATA.baseline.aggregate;
+  const loraAgg = evalData?.lora?.aggregate || EVAL_DATA.lora.aggregate;
+  const evalDelta = evalData?.delta || EVAL_DATA.delta;
+
+  const seedRows = (() => {
+    const base = evalData?.baseline?.per_seed || [];
+    const lora = evalData?.lora?.per_seed || [];
+    const seeds = Array.from(new Set([...base.map((s) => s.seed), ...lora.map((s) => s.seed)])).sort((a, b) => a - b);
+    return seeds.map((seed) => {
+      const b = base.find((x) => x.seed === seed);
+      const l = lora.find((x) => x.seed === seed);
+      return {
+        seed: `seed ${seed}`,
+        baseline_ppl: b?.perplexity ?? null,
+        lora_ppl: l?.perplexity ?? null,
+      };
+    });
+  })();
+
+  const rankRows = (rankSweep?.ranks || []).map((r) => ({
+    rank: `r=${r.rank}`,
+    rankValue: r.rank,
+    mean_ppl: r.mean_perplexity,
+    std_ppl: r.std_perplexity,
+    trainable_pct: r.trainable_pct,
+    decision: r.decision,
+  }));
+
+  const bestRank = rankSweep?.best_rank || RANK_SWEEP_DATA.best_rank;
+  const promptRows = Object.entries(promptBenchmarks).map(([key, value]) => ({
+    key,
+    label: value.label || key,
+    baseline_wins: value.counts?.baseline_wins ?? 0,
+    lora_wins: value.counts?.lora_wins ?? 0,
+    ties: value.counts?.ties ?? 0,
+    win_rate: value.counts?.lora_win_rate_on_decisive ?? 0,
+  }));
+  const bestPromptRun = [...promptRows].sort((a, b) => b.win_rate - a.win_rate)[0];
 
   const toggleExp = (id) => {
     setActiveExp(prev => {
@@ -396,6 +490,15 @@ function ExperimentResults() {
     });
   })();
 
+  const finalExperimentRows = experiments
+    .filter((e) => Number.isFinite(Number(e.perplexity)))
+    .map((e) => ({
+      experiment: e.label,
+      perplexity: Number(e.perplexity),
+    }));
+
+  const hasLossCurvePoints = mergedCurves.length > 1;
+
   const lrMerged = (() => {
     const steps = new Set();
     Object.values(lrCurvesSource).forEach(c => c.forEach(p => steps.add(p.step)));
@@ -409,6 +512,12 @@ function ExperimentResults() {
     });
   })();
 
+  const lrBarData = Object.entries(lrCurvesSource).map(([lr, curve]) => {
+    const last = [...curve].sort((a, b) => (a.step ?? 0) - (b.step ?? 0)).slice(-1)[0];
+    return { lr, val_loss: last?.val ?? null };
+  }).filter((x) => Number.isFinite(Number(x.val_loss)));
+  const hasLrCurveLines = Object.values(lrCurvesSource).some((curve) => (curve?.length || 0) > 1);
+
   return (
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
       {/* View selector */}
@@ -418,6 +527,9 @@ function ExperimentResults() {
           {id:"lr_sweep",    label:"LR Sweep"},
           {id:"summary",     label:"Summary Table"},
           {id:"lora",        label:"LoRA Efficiency"},
+          {id:"heldout_eval",label:"Held-out Eval"},
+          {id:"rank_sweep",  label:"Rank Sweep"},
+          {id:"prompt_benchmark", label:"Prompt Benchmark"},
         ].map(v=>(
           <Pill key={v.id} active={view===v.id} onClick={()=>setView(v.id)}>
             {v.label}
@@ -428,36 +540,58 @@ function ExperimentResults() {
       {/* Loss curves */}
       {view==="loss_curves" && (
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
-          <div style={{display:"flex",gap:8}}>
-            {experiments.map(e=>(
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            {experiments.filter(e => (e.curve?.length || 0) > 0).map(e=>(
               <Pill key={e.id} active={activeExp.has(e.id)}
                 onClick={()=>toggleExp(e.id)} color={e.color}>
                 {e.label}
               </Pill>
             ))}
           </div>
-          <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
-            <ResponsiveContainer width="100%" height={320}>
-              <LineChart data={mergedCurves} margin={{right:20}}>
-                <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-                <XAxis dataKey="step" stroke={C.muted} tick={{fontSize:11}} />
-                <YAxis stroke={C.muted} tick={{fontSize:11}} domain={[0,"auto"]} />
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
-                {experiments.filter(e=>activeExp.has(e.id)).map(e=>[
-                  <Line key={`${e.id}_val`} type="monotone" dataKey={`${e.id}_val`}
-                    name={`${e.label} val`} stroke={e.color}
-                    strokeWidth={2} dot={false} connectNulls={false} />,
-                  <Line key={`${e.id}_train`} type="monotone" dataKey={`${e.id}_train`}
-                    name={`${e.label} train`} stroke={e.color}
-                    strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls={false} />,
-                ])}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div style={{fontSize:11,color:C.textDim,textAlign:"center"}}>
-            Solid = validation loss · Dashed = training loss
-          </div>
+          {hasLossCurvePoints ? (
+            <>
+              <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
+                <ResponsiveContainer width="100%" height={320}>
+                  <LineChart data={mergedCurves} margin={{right:20}}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                    <XAxis dataKey="step" stroke={C.muted} tick={{fontSize:11}} />
+                    <YAxis stroke={C.muted} tick={{fontSize:11}} domain={[0,"auto"]} />
+                    <Tooltip contentStyle={TOOLTIP_STYLE} />
+                    <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+                    {experiments.filter(e=>activeExp.has(e.id)).map(e=>[
+                      <Line key={`${e.id}_val`} type="monotone" dataKey={`${e.id}_val`}
+                        name={`${e.label} val`} stroke={e.color}
+                        strokeWidth={2} dot={false} connectNulls={false} />,
+                      <Line key={`${e.id}_train`} type="monotone" dataKey={`${e.id}_train`}
+                        name={`${e.label} train`} stroke={e.color}
+                        strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls={false} />,
+                    ])}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div style={{fontSize:11,color:C.textDim,textAlign:"center"}}>
+                Solid = validation loss · Dashed = training loss
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={finalExperimentRows}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                    <XAxis dataKey="experiment" stroke={C.muted} tick={{fontSize:11}} />
+                    <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                    <Tooltip contentStyle={TOOLTIP_STYLE} />
+                    <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+                    <Bar dataKey="perplexity" name="Final Perplexity" fill={C.accent3} radius={[5,5,0,0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div style={{fontSize:11,color:C.textDim,textAlign:"center"}}>
+                Curve data is unavailable in current artifact set; showing final perplexity by experiment.
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -466,16 +600,27 @@ function ExperimentResults() {
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
           <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
             <ResponsiveContainer width="100%" height={320}>
-              <LineChart data={lrMerged}>
-                <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-                <XAxis dataKey="step" stroke={C.muted} tick={{fontSize:11}} />
-                <YAxis stroke={C.muted} tick={{fontSize:11}} />
-                <Tooltip contentStyle={TOOLTIP_STYLE} />
-                <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
-                <Line type="monotone" dataKey="1e-3" name="lr=1e-3 (too aggressive)" stroke={C.accent2} strokeWidth={2} dot={false} connectNulls={false}/>
-                <Line type="monotone" dataKey="3e-4" name="lr=3e-4 (best in sweep)" stroke={C.accent3} strokeWidth={2.5} dot={false}/>
-                <Line type="monotone" dataKey="1e-4" name="lr=1e-4 (too slow)" stroke={C.muted} strokeWidth={2} dot={false}/>
-              </LineChart>
+              {hasLrCurveLines ? (
+                <LineChart data={lrMerged}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                  <XAxis dataKey="step" stroke={C.muted} tick={{fontSize:11}} />
+                  <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                  <Tooltip contentStyle={TOOLTIP_STYLE} />
+                  <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+                  <Line type="monotone" dataKey="1e-3" name="lr=1e-3 (too aggressive)" stroke={C.accent2} strokeWidth={2} dot={false} connectNulls={false}/>
+                  <Line type="monotone" dataKey="3e-4" name="lr=3e-4 (best in sweep)" stroke={C.accent3} strokeWidth={2.5} dot={false}/>
+                  <Line type="monotone" dataKey="1e-4" name="lr=1e-4 (too slow)" stroke={C.muted} strokeWidth={2} dot={false}/>
+                </LineChart>
+              ) : (
+                <BarChart data={lrBarData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                  <XAxis dataKey="lr" stroke={C.muted} tick={{fontSize:11}} />
+                  <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                  <Tooltip contentStyle={TOOLTIP_STYLE} />
+                  <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+                  <Bar dataKey="val_loss" name="Final Val Loss" fill={C.accent} radius={[5,5,0,0]} />
+                </BarChart>
+              )}
             </ResponsiveContainer>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
@@ -551,6 +696,129 @@ function ExperimentResults() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Held-out evaluation */}
+      {view==="heldout_eval" && (
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
+            <StatCard
+              label="Baseline Mean PPL"
+              value={baselineAgg.mean_perplexity?.toFixed ? baselineAgg.mean_perplexity.toFixed(2) : baselineAgg.mean_perplexity}
+              sub={`std=${baselineAgg.std_perplexity?.toFixed ? baselineAgg.std_perplexity.toFixed(2) : baselineAgg.std_perplexity}`}
+              color={C.text}
+            />
+            <StatCard
+              label="LoRA Mean PPL"
+              value={loraAgg.mean_perplexity?.toFixed ? loraAgg.mean_perplexity.toFixed(2) : loraAgg.mean_perplexity}
+              sub={`std=${loraAgg.std_perplexity?.toFixed ? loraAgg.std_perplexity.toFixed(2) : loraAgg.std_perplexity}`}
+              color={C.accent3}
+            />
+            <StatCard
+              label="PPL Delta (LoRA-Baseline)"
+              value={evalDelta.perplexity_mean_delta?.toFixed ? evalDelta.perplexity_mean_delta.toFixed(2) : evalDelta.perplexity_mean_delta}
+              sub="negative is better for LoRA"
+              color={evalDelta.perplexity_mean_delta < 0 ? C.accent3 : C.accent2}
+            />
+          </div>
+          <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={seedRows}>
+                <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                <XAxis dataKey="seed" stroke={C.muted} tick={{fontSize:11}} />
+                <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+                <Bar dataKey="baseline_ppl" name="Baseline PPL" fill={C.accent2} radius={[5,5,0,0]} />
+                <Bar dataKey="lora_ppl" name="LoRA PPL" fill={C.accent3} radius={[5,5,0,0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{fontSize:12,color:C.textDim}}>
+            Multi-seed held-out evaluation reduces single-run noise and makes model claims reproducible.
+          </div>
+        </div>
+      )}
+
+      {/* Rank sweep */}
+      {view==="rank_sweep" && (
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
+            <StatCard label="Best Rank" value={`r=${bestRank.rank}`} sub="Lowest mean perplexity" color={C.accent} />
+            <StatCard
+              label="Best Mean PPL"
+              value={bestRank.mean_perplexity?.toFixed ? bestRank.mean_perplexity.toFixed(2) : bestRank.mean_perplexity}
+              sub="held-out mean over seeds"
+              color={C.accent3}
+            />
+            <StatCard
+              label="Best Trainable %"
+              value={`${bestRank.trainable_pct?.toFixed ? bestRank.trainable_pct.toFixed(3) : bestRank.trainable_pct}%`}
+              sub="parameter efficiency at best rank"
+              color={C.text}
+            />
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+            <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
+              <ResponsiveContainer width="100%" height={280}>
+                <LineChart data={rankRows}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                  <XAxis dataKey="rank" stroke={C.muted} tick={{fontSize:11}} />
+                  <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                  <Tooltip contentStyle={TOOLTIP_STYLE} />
+                  <Line type="monotone" dataKey="mean_ppl" name="Mean PPL" stroke={C.accent3} strokeWidth={2.5} dot />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={rankRows}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                  <XAxis dataKey="rank" stroke={C.muted} tick={{fontSize:11}} />
+                  <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                  <Tooltip contentStyle={TOOLTIP_STYLE} />
+                  <Bar dataKey="trainable_pct" name="Trainable %" fill={C.accent} radius={[5,5,0,0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
+            {rankRows.map((r) => (
+              <div key={r.rank} style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:10,padding:"10px 14px"}}>
+                <div style={{fontSize:12,color:C.text}}>
+                  <span style={{color:C.accent3,fontFamily:"'DM Mono',monospace"}}>{r.rank}</span>{" "}
+                  · mean ppl {r.mean_ppl?.toFixed ? r.mean_ppl.toFixed(2) : r.mean_ppl} · trainable {r.trainable_pct?.toFixed ? r.trainable_pct.toFixed(3) : r.trainable_pct}%
+                </div>
+                <div style={{fontSize:11,color:C.textDim,marginTop:4}}>{r.decision}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Prompt benchmark */}
+      {view==="prompt_benchmark" && (
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
+            <StatCard label="Best Run" value={bestPromptRun?.label || "n/a"} sub="Highest LoRA decisive win-rate" color={C.accent}/>
+            <StatCard label="Best LoRA Win-rate" value={bestPromptRun ? `${(bestPromptRun.win_rate * 100).toFixed(2)}%` : "n/a"} sub="Decisive prompts only" color={C.accent3}/>
+            <StatCard label="Benchmark Variants" value={promptRows.length} sub="evaluated prompt benchmark runs" color={C.text}/>
+          </div>
+          <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"20px 10px 10px"}}>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={promptRows}>
+                <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                <XAxis dataKey="label" stroke={C.muted} tick={{fontSize:11}} />
+                <YAxis stroke={C.muted} tick={{fontSize:11}} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+                <Bar dataKey="baseline_wins" name="Baseline wins" fill={C.accent2} radius={[5,5,0,0]} />
+                <Bar dataKey="lora_wins" name="LoRA wins" fill={C.accent3} radius={[5,5,0,0]} />
+                <Bar dataKey="ties" name="Ties" fill={C.muted} radius={[5,5,0,0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       )}
@@ -762,12 +1030,141 @@ function InferenceComparison() {
   );
 }
 
+function DemoHighlights() {
+  const [expPayload, setExpPayload] = useState(null);
+  const [modelInfo, setModelInfo] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const [expRes, modelRes] = await Promise.all([
+          fetch(`${API}/experiments`),
+          fetch(`${API}/model/info`),
+        ]);
+        if (expRes.ok) setExpPayload(await expRes.json());
+        if (modelRes.ok) setModelInfo(await modelRes.json());
+      } catch {
+        setExpPayload(null);
+      }
+    })();
+  }, []);
+
+  const viewData = buildExperimentsView(expPayload);
+  const evalData = viewData.evaluation || EVAL_DATA;
+  const rankSweep = viewData.rankSweep || RANK_SWEEP_DATA;
+  const promptBenchmarks = viewData.promptBenchmarks || PROMPT_BENCHMARK_DATA;
+  const experiments = viewData.experiments || EXPERIMENTS;
+
+  const baselineAgg = evalData?.baseline?.aggregate || EVAL_DATA.baseline.aggregate;
+  const loraAgg = evalData?.lora?.aggregate || EVAL_DATA.lora.aggregate;
+  const evalDelta = evalData?.delta || EVAL_DATA.delta;
+  const bestRank = rankSweep?.best_rank || RANK_SWEEP_DATA.best_rank;
+
+  const promptRows = Object.entries(promptBenchmarks).map(([key, value]) => ({
+    key,
+    label: value.label || key,
+    baseline_wins: value.counts?.baseline_wins ?? 0,
+    lora_wins: value.counts?.lora_wins ?? 0,
+    ties: value.counts?.ties ?? 0,
+    win_rate: value.counts?.lora_win_rate_on_decisive ?? 0,
+  }));
+  const bestPromptRun = [...promptRows].sort((a, b) => b.win_rate - a.win_rate)[0];
+
+  const rankRows = (rankSweep?.ranks || []).map((r) => ({
+    rank: `r=${r.rank}`,
+    mean_ppl: r.mean_perplexity,
+  }));
+
+  const expRows = experiments
+    .filter((e) => Number.isFinite(Number(e.perplexity)))
+    .map((e) => ({ experiment: e.label, perplexity: Number(e.perplexity) }));
+
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:18}}>
+      <div style={{fontSize:13,color:C.textDim}}>
+        One-screen summary for demos: reproducible metrics, rank tradeoffs, and benchmark outcomes.
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14}}>
+        <StatCard
+          label="Model Size"
+          value={modelInfo?.total_parameters ? formatParams(modelInfo.total_parameters) : "0.79M"}
+          sub="from /model/info"
+          color={C.accent}
+        />
+        <StatCard
+          label="Held-out PPL Delta"
+          value={evalDelta.perplexity_mean_delta?.toFixed ? evalDelta.perplexity_mean_delta.toFixed(2) : evalDelta.perplexity_mean_delta}
+          sub={`baseline ${baselineAgg.mean_perplexity?.toFixed ? baselineAgg.mean_perplexity.toFixed(2) : baselineAgg.mean_perplexity} → lora ${loraAgg.mean_perplexity?.toFixed ? loraAgg.mean_perplexity.toFixed(2) : loraAgg.mean_perplexity}`}
+          color={evalDelta.perplexity_mean_delta < 0 ? C.accent3 : C.accent2}
+        />
+        <StatCard
+          label="Best Rank (Held-out)"
+          value={`r=${bestRank.rank}`}
+          sub={`ppl ${bestRank.mean_perplexity?.toFixed ? bestRank.mean_perplexity.toFixed(2) : bestRank.mean_perplexity}`}
+          color={C.accent3}
+        />
+        <StatCard
+          label="Best Prompt Win-rate"
+          value={bestPromptRun ? `${(bestPromptRun.win_rate * 100).toFixed(2)}%` : "n/a"}
+          sub={bestPromptRun?.label || "no benchmark loaded"}
+          color={C.text}
+        />
+      </div>
+
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+        <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"18px 10px 10px"}}>
+          <div style={{fontSize:12,color:C.textDim,marginBottom:8,paddingLeft:8}}>LoRA Rank Sweep (mean perplexity)</div>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={rankRows}>
+              <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+              <XAxis dataKey="rank" stroke={C.muted} tick={{fontSize:11}} />
+              <YAxis stroke={C.muted} tick={{fontSize:11}} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Line type="monotone" dataKey="mean_ppl" name="Mean PPL" stroke={C.accent3} strokeWidth={2.5} dot />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"18px 10px 10px"}}>
+          <div style={{fontSize:12,color:C.textDim,marginBottom:8,paddingLeft:8}}>Prompt Benchmark Wins</div>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={promptRows}>
+              <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+              <XAxis dataKey="label" stroke={C.muted} tick={{fontSize:11}} />
+              <YAxis stroke={C.muted} tick={{fontSize:11}} />
+              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Legend wrapperStyle={{fontSize:11,color:C.textDim}} />
+              <Bar dataKey="baseline_wins" name="Baseline wins" fill={C.accent2} radius={[5,5,0,0]} />
+              <Bar dataKey="lora_wins" name="LoRA wins" fill={C.accent3} radius={[5,5,0,0]} />
+              <Bar dataKey="ties" name="Ties" fill={C.muted} radius={[5,5,0,0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:12,padding:"18px 10px 10px"}}>
+        <div style={{fontSize:12,color:C.textDim,marginBottom:8,paddingLeft:8}}>Final Perplexity by Experiment</div>
+        <ResponsiveContainer width="100%" height={240}>
+          <BarChart data={expRows}>
+            <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+            <XAxis dataKey="experiment" stroke={C.muted} tick={{fontSize:11}} />
+            <YAxis stroke={C.muted} tick={{fontSize:11}} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} />
+            <Bar dataKey="perplexity" name="Perplexity" fill={C.accent} radius={[5,5,0,0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
 // ─── Root App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [tab, setTab] = useState("playground");
 
   const tabs = [
+    {id:"highlights", label:"⭐ Demo Highlights"},
     {id:"playground", label:"⚡ Generation Playground"},
     {id:"experiments", label:"📊 Experiment Results"},
     {id:"arch",        label:"🔬 Architecture Explorer"},
@@ -803,7 +1200,6 @@ export default function App() {
           }}>⬡</div>
           <div>
             <div style={{fontSize:16,fontWeight:700,letterSpacing:"-0.3px"}}>NanoGPT Lab</div>
-            <div style={{fontSize:11,color:C.textDim}}>Phase 6 Dashboard · d=128 · 4L · 1.83M params</div>
           </div>
         </div>
         <div style={{display:"flex",gap:6}}>
@@ -822,6 +1218,7 @@ export default function App() {
 
       {/* Content */}
       <main style={{maxWidth:1200, margin:"0 auto", padding:"36px 40px"}}>
+        {tab==="highlights"  && <DemoHighlights/>}
         {tab==="playground"  && <Playground/>}
         {tab==="experiments" && <ExperimentResults/>}
         {tab==="arch"        && <ArchExplorer/>}
